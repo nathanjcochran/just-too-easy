@@ -12,7 +12,7 @@
 
             <tr>
                 <td>
-                    [[player.name]]
+                    {{player.name}}
                 </td>
             </tr>
 
@@ -23,11 +23,11 @@
 
     <fieldset>
         <legend>Add a Player</legend>
-        <form class="form-horizontal" role="form" action = "/players" method="post" enctype="multipart/form-data">
+        <form class="form-horizontal" role="form" action = "players" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="name" class="col-xs-2 control-label">Name</label>
                 <div class="col-xs-10">
-                    <input id="name" class="form-control" type="text"/>
+                    <input id="name" name="name" class="form-control" type="text"/>
                 </div>
             </div>
 
@@ -35,7 +35,7 @@
                 <label for="image" class="col-xs-2 control-label">Image</label>
                 <div class="col-xs-10">
                     <span class="btn btn-default btn-file col-xs-12">
-                        <input id="image" type="file"/>
+                        <input id="image" name="image" type="file"/>
                     </span>
                 </div>
             </div>

@@ -21,18 +21,20 @@ class Players(webapp2.RequestHandler):
 
         # Spit them out in a template:
         template = jinja.get_template('players.html')
-        self.response.write(template.render(players))
+        self.response.write(template.render({'players':players}))
 
     def post(self):
         player = Player()
-        player.name = self.request.get("name")
+        player.name = self.request.get('name')
 
         image = Image()
-        image.data = self.request.get("image")
+        image.data = self.request.get('image')
         image.put()
 
         player.image = image.key
         player.put()
+
+        self.redirect('/admin/players')
 
 
 

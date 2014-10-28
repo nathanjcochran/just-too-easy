@@ -1,12 +1,15 @@
-application: niche-foosball
+application: just-too-easy
 version: 1
 runtime: python27
 api_version: 1
 threadsafe: yes
 
 handlers:
+- url: /css
+  static_dir: css
+
 - url: /*
-  script: niche-foosball.app
+  script: foosball.app
 
 libraries:
 - name: webapp2

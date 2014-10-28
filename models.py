@@ -1,4 +1,3 @@
-from enum import Enum
 from protorpc import messages
 from google.appengine.ext import ndb
 
@@ -19,8 +18,8 @@ class Game(ndb.Model):
 class Shot(ndb.Model):
     game = ndb.KeyProperty()
     player = ndb.KeyProperty()
-    position = ??
-    shot_type = msgprop.StringProperty()
+#    position = ??
+    shot_type = ndb.StringProperty()
 
 class ShotType(ndb.Model):
-    shot_type: ndb.StringProperty()
+    shot_type = ndb.StringProperty()

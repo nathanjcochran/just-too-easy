@@ -1,5 +1,6 @@
 import webapp2
 import jinja2
+import models
 
 jinja = jinja2.Environment(
         loader=jinja2.FileSystemLoader('./views'),

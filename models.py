@@ -1,6 +1,10 @@
 from protorpc import messages
 from google.appengine.ext import ndb
 
+class Image(ndb.Model):
+    filename = ndb.StringProperty()
+    image = ndb.BlobProperty()
+
 class Player(ndb.Model):
     name = ndb.StringProperty()
 
@@ -15,7 +19,7 @@ class Game(ndb.Model):
     blue_offense = ndb.KeyProperty(kind='Player')
     blue_defense = ndb.KeyProperty(kind='Player')
 
-class Shot(ndb.Model):
+class Shot(ndb.Model): # ancestor = Game => strongly consistent results
     game = ndb.KeyProperty()
     player = ndb.KeyProperty()
 #    position = ??

@@ -8,7 +8,10 @@ handlers:
 - url: /css
   static_dir: css
 
-- url: /*
+- url: /admin/.*
+  script: admin.app
+
+- url: /.*
   script: foosball.app
 
 libraries:

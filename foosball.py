@@ -7,7 +7,7 @@ jinja = jinja2.Environment(
         extensions=['jinja2.ext.autoescape'],
         autoescape=True)
 
-class PlayGame(webapp2.RequestHandler):
+class Game(webapp2.RequestHandler):
     def get(self):
         values = {
             'red_o':'Jim',
@@ -16,9 +16,9 @@ class PlayGame(webapp2.RequestHandler):
             'blue_d':'Ben',
         }
 
-        template = jinja.get_template('play_game.html')
+        template = jinja.get_template('game.html')
         self.response.write(template.render(values))
 
 app = webapp2.WSGIApplication([
-    ('/', PlayGame)
+    ('/game', Game)
 ], debug=True)

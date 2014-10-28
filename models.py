@@ -2,11 +2,11 @@ from protorpc import messages
 from google.appengine.ext import ndb
 
 class Image(ndb.Model):
-    filename = ndb.StringProperty()
-    image = ndb.BlobProperty()
+    data = ndb.BlobProperty()
 
 class Player(ndb.Model):
     name = ndb.StringProperty()
+    image = ndb.KeyProperty(kind="Image")
 
 class Game(ndb.Model):
     length = ndb.IntegerProperty()

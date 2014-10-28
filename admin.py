@@ -8,6 +8,10 @@ jinja = jinja2.Environment(
         extensions=['jinja2.ext.autoescape'],
         autoescape=True)
 
+#class ViewImage(webapp2.RequestHandler):
+#    def get(self):
+#        key - self.request.get()
+
 class Players(webapp2.RequestHandler):
     def get(self):
 
@@ -19,8 +23,17 @@ class Players(webapp2.RequestHandler):
         template = jinja.get_template('players.html')
         self.response.write(template.render(players))
 
-#    def post(self):
-        
+    def post(self):
+        player = Player()
+        player.name = self.request.get("name")
+
+        image = Image()
+        image.data = self.request.get("image")
+        image.put()
+
+        player.image = image.key
+        player.put()
+
 
 
 app = webapp2.WSGIApplication([

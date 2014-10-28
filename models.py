@@ -20,19 +20,7 @@ class Shot(ndb.Model):
     game = ndb.KeyProperty()
     player = ndb.KeyProperty()
     position = ??
-    shot_type = msgprop.EnumProperty(ShotType)
+    shot_type = msgprop.StringProperty()
 
-# Consider making this a class
 class ShotType(ndb.Model):
     shot_type: ndb.StringProperty()
-
-class ShotType(messages.Enum):
-    Snipe = 1
-    LemonySnicket = 2
-    TradeMark = 3
-    ReflectShawn = 4
-
-
-
-
-

@@ -40,7 +40,7 @@ class AddPlayer(webapp2.RequestHandler):
         player.image = image.key
         player.put()
 
-        self.redirect('/admin/players')
+        self.redirect('/players')
 
 class RemovePlayer(webapp2.RequestHandler):
     def post(self):
@@ -48,7 +48,7 @@ class RemovePlayer(webapp2.RequestHandler):
         player_key = ndb.Key(urlsafe = url_key)
         player_key.delete()
 
-        self.redirect('/admin/players')
+        self.redirect('/players')
 
 app = webapp2.WSGIApplication([
     ('/players', Players),

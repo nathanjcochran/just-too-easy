@@ -26,4 +26,5 @@ class Shot(ndb.Model): # ancestor = Game => strongly consistent results
     shot_type = ndb.StringProperty()
 
 class ShotType(ndb.Model):
-    shot_type = ndb.StringProperty()
+    name = ndb.StringProperty()
+#    position = ??

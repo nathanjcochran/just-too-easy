@@ -50,9 +50,40 @@ class RemovePlayer(webapp2.RequestHandler):
 
         self.redirect('/admin/players')
 
+class ShotTypes(webapp2.RequestHandler):
+    def get(self):
+
+        # Fetch all shot types:
+        shottype_query = ShotType.query()
+        shottypes = shottype_query.fetch()
+
+        # Spit them out in a template:
+        template = jinja.get_template('shottypes.html')
+        self.response.write(template.render({'shottypes':shottypes}))
+
+class AddShotType(webapp2.RequestHandler):
+    def post(self):
+        shottype = ShotType()
+        shottype.name = self.request.get('name')
+        shottype.put()
+
+        self.redirect('/admin/shottypes')
+
+class RemoveShotType(webapp2.RequestHandler):
+    def post(self):
+        url_key = self.request.get('key')
+        shottype_key = ndb.Key(urlsafe = url_key)
+        shottype_key.delete()
+
+        self.redirect('/admin/shottypes')
+
+
 app = webapp2.WSGIApplication([
     ('/admin/players', Players),
     ('/admin/players/add', AddPlayer),
     ('/admin/players/remove', RemovePlayer),
+    ('/admin/shottypes', ShotTypes),
+    ('/admin/shottypes/add', AddShotType),
+    ('/admin/shottypes/remove', RemoveShotType),
     ('/admin/image', ViewImage)
     ], debug=True)

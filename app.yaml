@@ -8,11 +8,14 @@ handlers:
 - url: /css
   static_dir: css
 
-- url: /admin/.*
-  script: admin.app
+- url: /players.*
+  script: players.app
 
-- url: /.*
-  script: foosball.app
+- url: /shot_types.*
+  script: shot_types.app
+
+- url: /game.*
+  script: game.app
 
 libraries:
 - name: webapp2

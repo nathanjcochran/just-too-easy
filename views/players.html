@@ -13,8 +13,14 @@
                 <td class="col-xs-3">
                     <img src="/admin/image?key={{player.image.urlsafe()}}" class="player-img img-rounded col-xs-12"/>
                 </td>
-                <td class="col-xs-9">
+                <td class="col-xs-7">
                     <h3>{{player.name}}</h3>
+                </td>
+                <td class="col-xs-2">
+                    <form action="/admin/players/remove" method="post">
+                        <input type="hidden" name="key" value="{{player.key.urlsafe()}}"/>
+                        <input type="submit" value="Delete" class="btn btn-default"/>
+                    </form>
                 </td>
             </tr>
 
@@ -24,7 +30,7 @@
 
     <fieldset>
         <legend>Add a Player</legend>
-        <form class="form-horizontal" role="form" action = "/admin/players" method="post" enctype="multipart/form-data">
+        <form class="form-horizontal" role="form" action="/admin/players/add" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="name" class="col-xs-2 control-label">Name</label>
                 <div class="col-xs-8">

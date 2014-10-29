@@ -17,7 +17,6 @@ class ViewImage(webapp2.RequestHandler):
         self.response.headers['Content-Type'] = 'image/jpeg'
         self.response.out.write(image.data)
 
-
 class Players(webapp2.RequestHandler):
     def get(self):
 
@@ -29,6 +28,7 @@ class Players(webapp2.RequestHandler):
         template = jinja.get_template('players.html')
         self.response.write(template.render({'players':players}))
 
+class AddPlayer(webapp2.RequestHandler):
     def post(self):
         player = Player()
         player.name = self.request.get('name')
@@ -42,9 +42,17 @@ class Players(webapp2.RequestHandler):
 
         self.redirect('/admin/players')
 
+class RemovePlayer(webapp2.RequestHandler):
+    def post(self):
+        url_key = self.request.get('key')
+        player_key = ndb.Key(urlsafe = url_key)
+        player_key.delete()
 
+        self.redirect('/admin/players')
 
 app = webapp2.WSGIApplication([
     ('/admin/players', Players),
+    ('/admin/players/add', AddPlayer),
+    ('/admin/players/remove', RemovePlayer),
     ('/admin/image', ViewImage)
     ], debug=True)

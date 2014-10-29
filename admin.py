@@ -8,9 +8,15 @@ jinja = jinja2.Environment(
         extensions=['jinja2.ext.autoescape'],
         autoescape=True)
 
-#class ViewImage(webapp2.RequestHandler):
-#    def get(self):
-#        key - self.request.get()
+class ViewImage(webapp2.RequestHandler):
+    def get(self):
+        url_key = self.request.get('key')
+        image_key = ndb.Key(urlsafe = url_key)
+        image = image_key.get()
+
+        self.response.headers['Content-Type'] = 'image/jpeg'
+        self.response.out.write(image.data)
+
 
 class Players(webapp2.RequestHandler):
     def get(self):
@@ -39,5 +45,6 @@ class Players(webapp2.RequestHandler):
 
 
 app = webapp2.WSGIApplication([
-    ('/admin/players', Players)
-], debug=True)
+    ('/admin/players', Players),
+    ('/admin/image', ViewImage)
+    ], debug=True)

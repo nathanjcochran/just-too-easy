@@ -9,13 +9,13 @@ handlers:
   static_dir: css
 
 - url: /players.*
-  script: players.app
+  script: controllers.players.app
 
 - url: /shot_types.*
-  script: shot_types.app
+  script: controllers.shot_types.app
 
 - url: /game.*
-  script: game.app
+  script: controllers.game.app
 
 libraries:
 - name: webapp2

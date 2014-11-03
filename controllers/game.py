@@ -1,24 +1,80 @@
 import webapp2
 import jinja2
-import models
+from random import shuffle
+from models import *
+
+GAME_LENGTH = 6
 
 jinja = jinja2.Environment(
         loader=jinja2.FileSystemLoader('./views'),
         extensions=['jinja2.ext.autoescape'],
         autoescape=True)
 
-class Game(webapp2.RequestHandler):
+class NewGame(webapp2.RequestHandler):
+    """
+    User selects 4 players to start game:
+    """
     def get(self):
+        players = Player.query()
+        template = jinja.get_template('new_game.html')
+        self.response.write(template.render({'players':players}))
+
+    """
+    Randomly assign players' positions, create game:
+    """ 
+    def post(self):
+        url_keys = self.request.get('players', allow_multiple=True)
+
+        if len(url_keys) != 4:
+            self.redirect('/game/new')
+            return
+
+        # Get players:
+        players = []
+        for url_key in url_keys:
+            player_key = ndb.Key(urlsafe = url_key)
+            player = player_key.get()
+            players.append(player)
+
+        # Randomize
+        shuffle(players)
+
+        # Create game:
+        game = Game()
+        game.length = GAME_LENGTH
+        game.status = GameStatus.active
+        game.red_offense = players[0].key
+        game.red_defense = players[1].key
+        game.blue_offense = players[2].key
+        game.blue_defense = players[3].key
+        game.put()
+
+        self.redirect('/game/play?key=' + game.key.urlsafe())
+        
+
+
+class PlayGame(webapp2.RequestHandler):
+    """
+    Play a game.  Shows score and reveals scoring buttons.
+    """
+    def get(self):
+
+        url_key = self.request.get('key')
+        game_key = ndb.Key(urlsafe = url_key)
+        game = game_key.get()
+
+        # Lots of gets, here.  Possibly rethink:
         values = {
-            'red_o':'Jim',
-            'red_d':'Nate',
-            'blue_o':'Shawn',
-            'blue_d':'Ben',
+            'red_o' : game.red_offense.get(),
+            'red_d' : game.red_defense.get(),
+            'blue_o' : game.blue_offense.get(),
+            'blue_d' : game.blue_defense.get()
         }
 
-        template = jinja.get_template('game.html')
+        template = jinja.get_template('play_game.html')
         self.response.write(template.render(values))
 
 app = webapp2.WSGIApplication([
-    ('/game', Game)
-], debug=True)
+    ('/game/new', NewGame),
+    ('/game/play', PlayGame)
+    ], debug=True)

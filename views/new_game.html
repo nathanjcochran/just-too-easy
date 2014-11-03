@@ -1,0 +1,32 @@
+{% extends "master.html" %}
+
+{% block body %}
+
+<div class="container">
+    <fieldset>
+        <legend>Select Players for Game:</legend>
+        <form class="form-horizontal" role="form" action="/game/new" method="post">
+            {% for player in players %}
+
+            <div class="form-group">
+                <div class="checkbox">
+                    <div class="col-xs-3">
+                        <img src="/players/image?key={{player.image.urlsafe()}}" class="img-rounded col-xs-12"/>
+                    </div>
+                    <label class=col-xs-3">
+                        <input type="checkbox"/ name="players" value="{{player.key.urlsafe()}}">{{ player.name }}
+                    </label>
+                </div>
+            </div>
+
+            {% endfor %}
+            <div class="form-group">
+                <div class="col-xs-offset-2 col-xs-10">
+                    <input type="submit" value="Submit" class="btn btn-default"/>
+                </div>
+            </div>
+        </form>
+    </fieldset>
+</div>
+
+{% endblock body %}

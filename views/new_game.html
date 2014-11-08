@@ -1,28 +1,40 @@
 {% extends "master.html" %}
 
+{% block scripts %}
+
+<link rel="stylesheet" href="/scripts/image-picker.css">
+<link rel="stylesheet" href="/scripts/new-game.css">
+<script type="text/javascript" src="/scripts/image-picker.min.js"></script>
+<script type="text/javascript" src="http://cdnjs.com/libraries/masonry"></script>
+<script type="text/javascript" src="/scripts/new-game.js"></script>
+
+
+{% endblock %}
+
 {% block new_game_nav %}class="active"{% endblock %}
 
 {% block body %}
 
 <div class="container">
     <h1>New Game</h1>
+
+    {% if error %}
+    <p class="alert alert-danger">{{error}}</p>
+    {% endif %}
+
     <fieldset>
         <legend>Select Players:</legend>
         <form class="form-horizontal" role="form" action="/game/new" method="post">
-            {% for player in players %}
+            <select class="player-select" multiple size="4">
+                {% for player in players %}
 
-            <div class="form-group">
-                <div class="checkbox">
-                    <div class="col-xs-3">
-                        <img src="/players/image?key={{player.image.urlsafe()}}" class="img-rounded col-xs-12"/>
-                    </div>
-                    <label class=col-xs-3">
-                        <input type="checkbox"/ name="players" value="{{player.key.urlsafe()}}">{{ player.name }}
-                    </label>
-                </div>
-            </div>
+                <option data-img-src="/players/image?key={{player.image.urlsafe()}}"
+                    data-img-label={{player.name}}
+                    value="{{player.key.urlsafe()}}"></option>
 
-            {% endfor %}
+                {% endfor %}
+            </select>
+
             <div class="form-group">
                 <div class="col-xs-offset-2 col-xs-10">
                     <input type="submit" value="Submit" class="btn btn-default"/>

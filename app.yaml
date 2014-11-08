@@ -5,8 +5,8 @@ api_version: 1
 threadsafe: yes
 
 handlers:
-- url: /css
-  static_dir: css
+- url: /scripts
+  static_dir: scripts
 
 - url: /players.*
   script: controllers.players.app

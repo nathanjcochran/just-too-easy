@@ -25,8 +25,16 @@ class NewGame(webapp2.RequestHandler):
     def post(self):
         url_keys = self.request.get('players', allow_multiple=True)
 
+        # Incorrect number of players:
         if len(url_keys) != 4:
-            self.redirect('/game/new')
+            players = Player.query()
+            model = {
+                'players':players,
+                'error':'Please select exactly 4 players'
+            }
+
+            template = jinja.get_template('new_game.html')
+            self.response.write(template.render(model))
             return
 
         # Get players:
@@ -50,8 +58,6 @@ class NewGame(webapp2.RequestHandler):
         game.put()
 
         self.redirect('/game/play?key=' + game.key.urlsafe())
-        
-
 
 class PlayGame(webapp2.RequestHandler):
     """
@@ -65,11 +71,11 @@ class PlayGame(webapp2.RequestHandler):
 
         # Lots of gets, here.  Possibly rethink:
         values = {
-            'red_o' : game.red_offense.get(),
-            'red_d' : game.red_defense.get(),
-            'blue_o' : game.blue_offense.get(),
-            'blue_d' : game.blue_defense.get()
-        }
+                'red_o' : game.red_offense.get(),
+                'red_d' : game.red_defense.get(),
+                'blue_o' : game.blue_offense.get(),
+                'blue_d' : game.blue_defense.get()
+                }
 
         template = jinja.get_template('play_game.html')
         self.response.write(template.render(values))

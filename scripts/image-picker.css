@@ -18,7 +18,7 @@ ul.thumbnails.image_picker_selector li.group_title {
     float: none;
 }
 ul.thumbnails.image_picker_selector li {
-    margin: 0px 12px 12px 0px;
+    margin: 0px 1% 1% 0px;
     float: left;
 }
 ul.thumbnails.image_picker_selector li .thumbnail {

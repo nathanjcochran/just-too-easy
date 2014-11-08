@@ -1,10 +1,13 @@
 {% extends "master.html" %}
 
+{% block new_game_nav %}class="active"{% endblock %}
+
 {% block body %}
 
 <div class="container">
+    <h1>New Game</h1>
     <fieldset>
-        <legend>Select Players for Game:</legend>
+        <legend>Select Players:</legend>
         <form class="form-horizontal" role="form" action="/game/new" method="post">
             {% for player in players %}
 

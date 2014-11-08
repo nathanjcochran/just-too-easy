@@ -1,49 +1,46 @@
 {% extends "master.html" %}
 
+{% block shot_types_nav %}class="active"{% endblock %}
+
 {% block body %}
 
-<div class="container">
+<h1>Shot Types</h1>
+<table class="table table-responsive table-striped">
+    <tbody>
+        {% for shot_type in shot_types %}
 
-    <h1>Shot Types</h1>
-    <table class="table table-responsive table-striped">
-        <tbody>
-            {% for shot_type in shot_types %}
+        <tr>
+            <td class="col-xs-6">
+                <h4>{{shot_type.name}}</h4>
+            </td>
+            <td class="col-xs-2">
+                <form action="/shot_types/remove" method="post">
+                    <input type="hidden" name="key" value="{{shot_type.key.urlsafe()}}"/>
+                    <input type="submit" value="Delete" class="btn btn-default"/>
+                </form>
+            </td>
+        </tr>
 
-            <tr>
-                <td class="col-xs-6">
-                    <h4>{{shot_type.name}}</h4>
-                </td>
-                <td class="col-xs-2">
-                    <form action="/shot_types/remove" method="post">
-                        <input type="hidden" name="key" value="{{shot_type.key.urlsafe()}}"/>
-                        <input type="submit" value="Delete" class="btn btn-default"/>
-                    </form>
-                </td>
-            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <fieldset>
-        <legend>Add a Shot Type</legend>
-        <form class="form-horizontal" role="form" action="/shot_types/add" method="post">
-            <div class="form-group">
-                <label for="name" class="col-xs-2 control-label">Name</label>
-                <div class="col-xs-8">
-                    <input id="name" name="name" class="form-control" type="text"/>
-                </div>
+<fieldset>
+    <legend>Add a Shot Type</legend>
+    <form class="form-horizontal" role="form" action="/shot_types/add" method="post">
+        <div class="form-group">
+            <label for="name" class="col-xs-2 control-label">Name</label>
+            <div class="col-xs-8">
+                <input id="name" name="name" class="form-control" type="text"/>
             </div>
+        </div>
 
-            <div class="form-group">
-                <div class="col-xs-offset-2 col-xs-10">
-                    <input type="submit" value="Submit" class="btn btn-default"/>
-                </div>
+        <div class="form-group">
+            <div class="col-xs-offset-2 col-xs-10">
+                <input type="submit" value="Submit" class="btn btn-default"/>
             </div>
-        </form>
-    </fieldset>
-
-</div>
-
+        </div>
+    </form>
+</fieldset>
 
 {% endblock body %}

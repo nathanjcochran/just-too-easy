@@ -1,59 +1,56 @@
 {% extends "master.html" %}
 
+{% block players_nav %}class="active"{% endblock %}
+
 {% block body %}
 
-<div class="container">
+<h1>Players</h1>
+<table class="table table-responsive table-striped">
+    <tbody>
+        {% for player in players %}
 
-    <h1>Players</h1>
-    <table class="table table-responsive table-striped">
-        <tbody>
-            {% for player in players %}
+        <tr>
+            <td class="col-xs-3">
+                <img src="/players/image?key={{player.image.urlsafe()}}" class="img-rounded col-xs-12"/>
+            </td>
+            <td class="col-xs-7">
+                <h3>{{player.name}}</h3>
+            </td>
+            <td class="col-xs-2">
+                <form action="/players/remove" method="post">
+                    <input type="hidden" name="key" value="{{player.key.urlsafe()}}"/>
+                    <input type="submit" value="Delete" class="btn btn-default"/>
+                </form>
+            </td>
+        </tr>
 
-            <tr>
-                <td class="col-xs-3">
-                    <img src="/players/image?key={{player.image.urlsafe()}}" class="img-rounded col-xs-12"/>
-                </td>
-                <td class="col-xs-7">
-                    <h3>{{player.name}}</h3>
-                </td>
-                <td class="col-xs-2">
-                    <form action="/players/remove" method="post">
-                        <input type="hidden" name="key" value="{{player.key.urlsafe()}}"/>
-                        <input type="submit" value="Delete" class="btn btn-default"/>
-                    </form>
-                </td>
-            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <fieldset>
-        <legend>Add a Player</legend>
-        <form class="form-horizontal" role="form" action="/players/add" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="name" class="col-xs-2 control-label">Name</label>
-                <div class="col-xs-8">
-                    <input id="name" name="name" class="form-control" type="text"/>
-                </div>
+<fieldset>
+    <legend>Add a Player</legend>
+    <form class="form-horizontal" role="form" action="/players/add" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="name" class="col-xs-2 control-label">Name</label>
+            <div class="col-xs-8">
+                <input id="name" name="name" class="form-control" type="text"/>
             </div>
+        </div>
 
-            <div class="form-group">
-                <label for="image" class="col-xs-2 control-label">Image</label>
-                <div class="col-xs-8">
-                    <input id="image" name="image" type="file"/>
-                </div>
+        <div class="form-group">
+            <label for="image" class="col-xs-2 control-label">Image</label>
+            <div class="col-xs-8">
+                <input id="image" name="image" type="file"/>
             </div>
+        </div>
 
-            <div class="form-group">
-                <div class="col-xs-offset-2 col-xs-10">
-                    <input type="submit" value="Submit" class="btn btn-default"/>
-                </div>
+        <div class="form-group">
+            <div class="col-xs-offset-2 col-xs-10">
+                <input type="submit" value="Submit" class="btn btn-default"/>
             </div>
-        </form>
-    </fieldset>
-
-</div>
-
+        </div>
+    </form>
+</fieldset>
 
 {% endblock body %}

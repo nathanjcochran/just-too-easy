@@ -1,5 +1,24 @@
 {% extends "master.html" %}
 
+
+{% macro modal_body(game_key, player_key, shot_types) %}
+
+<form class="form-horizontal" role="form">
+    <div class="form-group">
+        <div class="col-xs-12">
+            <select multiple class="form-control">
+                {% for shot_type in shot_types %}
+
+                <option name="shot_type_key" value="{{shot_type.key}}">{{shot_type.name}}</option>
+
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</form>
+
+{% endmacro %}
+
 {% block body %}
 
 <br>
@@ -14,17 +33,15 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="blueOffenseModal" tabindex="-1" role="dialog" aria-labelledby="blueOffenseModalLabel" aria-hidden="true">
+    <div class="modal" id="blueOffenseModal" tabindex="-1" role="dialog" aria-labelledby="blueOffenseModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title" id="blueOffenseModalLabel">Modal title</h4>
+                    <h4 class="modal-title" id="blueOffenseModalLabel">Blue Offense Shot Type:</h4>
                 </div>
                 <div class="modal-body">
-                    <form>
-
-                    </form>
+                    {{ modal_body(game_key, blue_o.key, offensive_shots) }}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -34,9 +51,28 @@
         </div>
     </div>
 
-
+    <!-- Blue Defense -->
     <div class="col-xs-6">
-        <button type="button" class="btn btn-primary btn-block">{{blue_d.name}}</button>
+        <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#blueDefenseModal">{{blue_d.name}}</button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="blueDefenseModal" tabindex="-1" role="dialog" aria-labelledby="blueDefenseModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="blueDefenseModalLabel">Blue Defense Shot Type:</h4>
+                </div>
+                <div class="modal-body">
+                    {{ modal_body(game_key, blue_d.key, defensive_shots) }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <br>
@@ -44,11 +80,53 @@
 <br>
 <br>
 <div class="row">
+
+    <!-- Red Offense -->
     <div class="col-xs-6">
-        <button type="button" class="btn btn-danger btn-block">{{red_d.name}}</button>
+        <button type="button" class="btn btn-danger btn-block" data-toggle="modal" data-target="#redOffenseModal">{{red_o.name}}</button>
     </div>
+
+    <!-- Modal -->
+    <div class="modal" id="redOffenseModal" tabindex="-1" role="dialog" aria-labelledby="redOffenseModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="redOffenseModalLabel">Red Offense Shot Type:</h4>
+                </div>
+                <div class="modal-body">
+                    {{ modal_body(game_key, red_o.key, offensive_shots) }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Red Defense -->
     <div class="col-xs-6">
-        <button type="button" class="btn btn-danger btn-block">{{red_o.name}}</button>
+        <button type="button" class="btn btn-danger btn-block" data-toggle="modal" data-target="#redDefenseModal">{{red_d.name}}</button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="redDefenseModal" tabindex="-1" role="dialog" aria-labelledby="redDefenseModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="redDefenseModalLabel">Red Defense Shot Type:</h4>
+                </div>
+                <div class="modal-body">
+                    {{ modal_body(game_key, red_d.key, defensive_shots) }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

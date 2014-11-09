@@ -100,8 +100,14 @@ class PlayGame(webapp2.RequestHandler):
         for actor in game.actors:
             self.response.write(str(actor.position) + " " + str(actor.side))
 
+        shot_types = ShotType.query()
+
+
         # Lots of gets, here.  Possibly rethink:
         values = {
+            'game_key' : game_key,
+            'offensive_shots' : [s for s in shot_types],
+            'defensive_shots' : [s for s in shot_types],
             'red_o' : game.player(Side.red, Position.offense).get(),
             'red_d' : game.player(Side.red, Position.defense).get(),
             'blue_o' : game.player(Side.blue, Position.offense).get(),

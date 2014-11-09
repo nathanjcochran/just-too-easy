@@ -23,26 +23,30 @@ class Player(ndb.Model):
     name = ndb.StringProperty(required=True)
     image = ndb.KeyProperty(kind='Image')
 
-class Actor(ndb.Model):
-    player = ndb.KeyProperty(kind='Player', required=True)
-    side = msgprop.EnumProperty(Side, required=True)
-    position = msgprop.EnumProperty(Position, required=True)
-
 class Game(ndb.Model):
     length = ndb.IntegerProperty(default=6)
     status = msgprop.EnumProperty(GameStatus, required=True)
     timestamp = ndb.DateTimeProperty(auto_now_add=True, required=True)
 
     # Players: (current positions)
-    actors = ndb.StructuredProperty(Actor, repeated=True)
+    red_o = ndb.KeyProperty(kind='Player')
+    red_d = ndb.KeyProperty(kind='Player')
+    blue_o = ndb.KeyProperty(kind='Player')
+    blue_d = ndb.KeyProperty(kind='Player')
 
     # Scores:
     red_shots = ndb.KeyProperty(kind='Shot', repeated=True)
     blue_shots = ndb.KeyProperty(kind='Shot', repeated=True)
 
-    def player(self, side, position):
-        actor = next(a for a in self.actors if (a.side == side and a.position == position))
-        return actor.player
+    def side_and_position(self, player_key):
+        if(player_key == self.red_o):
+            return Side.red, Position.offense
+        if(player_key == self.red_d):
+            return Side.red, Position.defense
+        if(player_key == self.blue_o):
+            return Side.blue, Position.offense
+        if(player_key == self.blue_d):
+            return Side.blue, Position.defense
 
 class Shot(ndb.Model): # ancestor = Game => strongly consistent results
     player = ndb.KeyProperty(kind='Player', required=True)

@@ -54,34 +54,10 @@ class NewGame(webapp2.RequestHandler):
         game = Game()
         game.length = GAME_LENGTH
         game.status = GameStatus.active
-
-        # Red Offense:
-        actor = Actor()
-        actor.player = player_keys[0]
-        actor.side = Side.red
-        actor.position = Position.offense
-        game.actors.append(actor)
-
-        # Red Defense:
-        actor = Actor()
-        actor.player = player_keys[1]
-        actor.side = Side.red
-        actor.position = Position.defense
-        game.actors.append(actor)
-
-        # Blue Offense:
-        actor = Actor()
-        actor.player = player_keys[2]
-        actor.side = Side.blue
-        actor.position = Position.offense
-        game.actors.append(actor)
-
-        # Blue Defense:
-        actor = Actor()
-        actor.player = player_keys[3]
-        actor.side = Side.blue
-        actor.position = Position.defense
-        game.actors.append(actor)
+        game.red_o = player_keys[0]
+        game.red_d = player_keys[1]
+        game.blue_o = player_keys[2]
+        game.blue_d = player_keys[3]
 
         # Persist it:
         game.put()
@@ -101,13 +77,9 @@ class PlayGame(webapp2.RequestHandler):
 
         # Lots of gets, here.  Possibly rethink:
         values = {
-            'game_key' : game_key,
-            'offensive_shots' : [s for s in shot_types],
-            'defensive_shots' : [s for s in shot_types],
-            'red_o' : game.player(Side.red, Position.offense).get(),
-            'red_d' : game.player(Side.red, Position.defense).get(),
-            'blue_o' : game.player(Side.blue, Position.offense).get(),
-            'blue_d' : game.player(Side.blue, Position.defense).get()
+            'game' : game,
+            'offensive_shots' : [s for s in shot_types if s.position != Position.defense],
+            'defensive_shots' : [s for s in shot_types if s.position != Position.offense],
         }
 
         template = jinja.get_template('play_game.html')
@@ -122,28 +94,28 @@ class PlayGame(webapp2.RequestHandler):
         player_key = ndb.Key(urlsafe = self.request.get('player_key'))
 
         # Get the actor who made the shot:
-        actor = next(a for a in game.actors if a.player == player_key)
+        side, position = game.side_and_position(player_key)
 
         # Create the shot record:
         shot = Shot(ancestor = game.key)
         shot.player = player_key
-        shot.position = actor.position
-        shot.side = actor.side
+        shot.position = position
+        shot.side = side
         shot.shot_type = shot_type_key
 
         # If red scored:
-        if actor.side == Side.red:
+        if side == Side.red:
             game.red_shots.append(shot.key)
-            shot.against = game.player(Side.blue, Position.defense)
+            shot.against = game.blue_d
 
             # Mark game complete if over:
             if len(game.red_shots) >= game.length:
                 game.status = GameStatus.complete
 
         # If blue scored:
-        elif actor.side == Side.blue:
+        elif side == Side.blue:
             game.blue_shots.append(shot.key)
-            shot.against = game.player(Side.red, Position.defense)
+            shot.against = game.red_d
 
             # Mark game complete if over:
             if len(game.blue_shots) >= game.length:

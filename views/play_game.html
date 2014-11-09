@@ -3,19 +3,14 @@
 
 {% macro modal_body(game_key, player_key, shot_types) %}
 
-<form class="form-horizontal" role="form">
-    <div class="form-group">
-        <div class="col-xs-12">
-            <select multiple class="form-control">
-                {% for shot_type in shot_types %}
 
-                <option name="shot_type_key" value="{{shot_type.key}}">{{shot_type.name}}</option>
-
-                {% endfor %}
-            </select>
-        </div>
+<div class="row">
+    <div class="btn-group-vertical col-xs-12">
+        {% for shot_type in shot_types %}
+        <button class="btn btn-default btn-block">{{shot_type.name}}</button>
+        {% endfor %}
     </div>
-</form>
+</div>
 
 {% endmacro %}
 

@@ -97,11 +97,7 @@ class PlayGame(webapp2.RequestHandler):
         game_key = ndb.Key(urlsafe = url_key)
         game = game_key.get()
 
-        for actor in game.actors:
-            self.response.write(str(actor.position) + " " + str(actor.side))
-
         shot_types = ShotType.query()
-
 
         # Lots of gets, here.  Possibly rethink:
         values = {

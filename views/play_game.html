@@ -1,17 +1,13 @@
 {% extends "master.html" %}
 
-
 {% macro modal_body(game_key, player_key, shot_types) %}
-
-
 <div class="row">
     <div class="btn-group-vertical col-xs-12">
         {% for shot_type in shot_types %}
-        <button class="btn btn-default btn-block">{{shot_type.name}}</button>
+        <button class="btn btn-default">{{shot_type.name}}</button>
         {% endfor %}
     </div>
 </div>
-
 {% endmacro %}
 
 {% block body %}

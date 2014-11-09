@@ -15,14 +15,22 @@ class ShotTypes(webapp2.RequestHandler):
         shot_type_query = ShotType.query()
         shot_types = shot_type_query.fetch()
 
+        positions = [p for p in Position]
+
+        model = {
+            'shot_types' : shot_types,
+            'positions' : positions,
+        }
+
         # Spit them out in a template:
         template = jinja.get_template('shot_types.html')
-        self.response.write(template.render({'shot_types':shot_types}))
+        self.response.write(template.render(model))
 
 class AddShotType(webapp2.RequestHandler):
     def post(self):
         shot_type = ShotType()
         shot_type.name = self.request.get('name')
+        shot_type.position = Position(self.request.get('position'))
         shot_type.put()
 
         self.redirect('/shot_types')

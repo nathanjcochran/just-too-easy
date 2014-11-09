@@ -6,14 +6,30 @@
 
 <h1>Shot Types</h1>
 <table class="table table-responsive table-striped">
+    <thead>
+        <tr>
+            <th class="col-xs-4">
+                Name
+            </th>
+            <th class="col-xs-4">
+                Position
+            </th>
+            <th class="col-xs-4">
+            </th>
+        </th>
+    </thead>
     <tbody>
+
         {% for shot_type in shot_types %}
 
         <tr>
-            <td class="col-xs-6">
+            <td class="col-xs-4">
                 <h4>{{shot_type.name}}</h4>
             </td>
-            <td class="col-xs-2">
+            <td class="col-xs-4">
+                <h4>{{shot_type.position | capitalize}}</h4>
+            </td>
+            <td class="col-xs-4">
                 <form action="/shot_types/remove" method="post">
                     <input type="hidden" name="key" value="{{shot_type.key.urlsafe()}}"/>
                     <input type="submit" value="Delete" class="btn btn-default"/>
@@ -24,6 +40,8 @@
         {% endfor %}
     </tbody>
 </table>
+
+<br><br>
 
 <fieldset>
     <legend>Add a Shot Type</legend>
@@ -36,7 +54,21 @@
         </div>
 
         <div class="form-group">
-            <div class="col-xs-offset-2 col-xs-10">
+            <div class="col-xs-2"></div>
+            {% for position in positions %}
+
+            <div class="radio-inline">
+                <label>
+                    <input type="radio" name="position" value="{{position}}" checked>
+                    {{position | capitalize}}
+                </label>
+            </div>
+
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-offset-2 col-xs-8">
                 <input type="submit" value="Submit" class="btn btn-default"/>
             </div>
         </div>

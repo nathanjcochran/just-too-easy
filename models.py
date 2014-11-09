@@ -10,6 +10,7 @@ class GameStatus(messages.Enum):
 class Position(messages.Enum):
     offense = 1
     defense = 2
+    either = 3
 
 class Side(messages.Enum):
     red = 1

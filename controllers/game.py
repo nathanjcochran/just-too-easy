@@ -58,30 +58,30 @@ class NewGame(webapp2.RequestHandler):
         # Red Offense:
         actor = Actor()
         actor.player = player_keys[0]
-        actor.side = Position.red
+        actor.side = Side.red
         actor.position = Position.offense
-        game.players.append(actor)
+        game.actors.append(actor)
 
         # Red Defense:
         actor = Actor()
         actor.player = player_keys[1]
-        actor.side = Position.red
+        actor.side = Side.red
         actor.position = Position.defense
-        game.players.append(actor)
+        game.actors.append(actor)
 
         # Blue Offense:
         actor = Actor()
         actor.player = player_keys[2]
-        actor.side = Position.blue
+        actor.side = Side.blue
         actor.position = Position.offense
-        game.players.append(actor)
+        game.actors.append(actor)
 
         # Blue Defense:
         actor = Actor()
         actor.player = player_keys[3]
-        actor.side = Position.blue
+        actor.side = Side.blue
         actor.position = Position.defense
-        game.players.append(actor)
+        game.actors.append(actor)
 
         # Persist it:
         game.put()
@@ -97,11 +97,14 @@ class PlayGame(webapp2.RequestHandler):
         game_key = ndb.Key(urlsafe = url_key)
         game = game_key.get()
 
+        for actor in game.actors:
+            self.response.write(str(actor.position) + " " + str(actor.side))
+
         # Lots of gets, here.  Possibly rethink:
         values = {
-            'red_o' : game.player(Side.red, Position.offense).get()
-            'red_d' : game.player(Side.red, Position.defense).get()
-            'blue_o' : game.player(Side.blue, Position.offense).get()
+            'red_o' : game.player(Side.red, Position.offense).get(),
+            'red_d' : game.player(Side.red, Position.defense).get(),
+            'blue_o' : game.player(Side.blue, Position.offense).get(),
             'blue_d' : game.player(Side.blue, Position.defense).get()
         }
 
@@ -132,7 +135,7 @@ class PlayGame(webapp2.RequestHandler):
             shot.against = game.player(Side.blue, Position.defense)
 
             # Mark game complete if over:
-            if len(game.red_shots) >= game.length)
+            if len(game.red_shots) >= game.length:
                 game.status = GameStatus.complete
 
         # If blue scored:
@@ -141,7 +144,7 @@ class PlayGame(webapp2.RequestHandler):
             shot.against = game.player(Side.red, Position.defense)
 
             # Mark game complete if over:
-            if len(game.blue_shots) >= game.length)
+            if len(game.blue_shots) >= game.length:
                 game.status = GameStatus.complete
 
         shot.put()

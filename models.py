@@ -11,48 +11,48 @@ class Position(messages.Enum):
     offense = 1
     defense = 2
 
-class Side(message.Enum):
+class Side(messages.Enum):
     red = 1
     blue = 2
 
 class Image(ndb.Model):
-    data = ndb.BlobProperty()
+    data = ndb.BlobProperty(required=True)
 
 class Player(ndb.Model):
-    name = ndb.StringProperty()
+    name = ndb.StringProperty(required=True)
     image = ndb.KeyProperty(kind='Image')
 
 class Actor(ndb.Model):
-    player = ndb.KeyProperty(kind='Player')
+    player = ndb.KeyProperty(kind='Player', required=True)
     side = msgprop.EnumProperty(Side, required=True)
     position = msgprop.EnumProperty(Position, required=True)
 
 class Game(ndb.Model):
     length = ndb.IntegerProperty(default=6)
     status = msgprop.EnumProperty(GameStatus, required=True)
-    timestamp = ndb.DateTimeProperty(auto_now_add=True)
+    timestamp = ndb.DateTimeProperty(auto_now_add=True, required=True)
 
     # Players: (current positions)
-    actors = nsb.StructuredProperty(kind='Actor', repeated=True)
+    actors = ndb.StructuredProperty(Actor, repeated=True)
 
     # Scores:
     red_shots = ndb.KeyProperty(kind='Shot', repeated=True)
     blue_shots = ndb.KeyProperty(kind='Shot', repeated=True)
 
-    def player(side, position):
-        actor = next(p for p in players if player.side == side and player.position == position)
-        player = actor.player
+    def player(self, side, position):
+        actor = next(a for a in self.actors if (a.side == side and a.position == position))
+        return actor.player
 
 class Shot(ndb.Model): # ancestor = Game => strongly consistent results
-    player = ndb.KeyProperty(kind='Player')
-    position = msgprop.EnumProperty(kind='Position')
-    side = msgprop.EnumProperty(kind='Side')
-    against = ndb.KeyProperty(kind='Player')
+    player = ndb.KeyProperty(kind='Player', required=True)
+    position = msgprop.EnumProperty(Position, required=True)
+    side = msgprop.EnumProperty(Side, required=True)
+    against = ndb.KeyProperty(kind='Player', required=True)
     shot_type = ndb.KeyProperty(kind='ShotType')
-    timestamp = ndb.DateTimeProperty(auto_add_now=True)
+    timestamp = ndb.DateTimeProperty(auto_now_add=True, required=True)
 
 class ShotType(ndb.Model):
-    name = ndb.StringProperty()
+    name = ndb.StringProperty(required=True)
     position = msgprop.EnumProperty(Position)
 
 

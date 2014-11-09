@@ -1,13 +1,18 @@
 {% extends "master.html" %}
 
-{% macro score_button(game_key, player, shot_types, btn_class, id) %}
+{% block scripts %}
+<script type="text/javascript" src="/scripts/play-game.js"></script>
+{% endblock %}
 
-<!-- Score Button -->
+{# ---- Score Button Macro ---- #}
+{% macro score_button(game, player, shot_types, btn_class, id) %}
+
+{# Score Button #}
 <div class="col-xs-6">
     <button type="button" class="btn {{btn_class}} btn-block" data-toggle="modal" data-target="#{{id}}Modal">{{player.name}}</button>
 </div>
 
-<!-- Modal -->
+{# Modal #}
 <div class="modal" id="{{id}}Modal" tabindex="-1" role="dialog" aria-labelledby="{{id}}ModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -17,16 +22,17 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="btn-group-vertical col-xs-12">
+                    <div class="btn-group-vertical col-xs-12" data-game="{{game.key.urlsafe()}}" data-player="{{player.key.urlsafe()}}">
                         {% for shot_type in shot_types %}
-                        <button class="btn btn-default">{{shot_type.name}}</button>
+
+                        <button class="btn btn-default btn-shot-type" data-shot-type="{{shot_type.key.urlsafe()}}">{{shot_type.name}}</button>
+
                         {% endfor %}
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>
@@ -36,31 +42,44 @@
 
 {% block body %}
 
-<br>
-<br>
-<br>
-<br>
+<br><br><br><br>
+
+<div class="row">
+    <div class="progress">
+        <div id="blue-score" class="progress-bar" role="progressbar" style="width: {{game.blue_score_percentage()}}%;">
+            {{game.blue_shots | length}}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="progress">
+        <div id="red-score" class="progress-bar progress-bar-danger" role="progressbar" style="width: {{game.red_score_percentage()}}%;">
+            {{game.red_shots | length}}
+        </div>
+    </div>
+</div>
+
 <div class="row">
 
-    <!-- Blue -->
+    {# Blue #}
 
     {{score_button(game, game.blue_o.get(), offensive_shots, "btn-primary", "blueOffense")}}
 
     {{score_button(game, game.blue_d.get(), defensive_shots, "btn-primary", "blueDefense")}}
 
 </div>
-<br>
-<br>
-<br>
-<br>
+
+<br><br><br><br>
+
 <div class="row">
 
-    <!-- Red -->
+    {# Red #}
 
     {{score_button(game, game.red_o.get(), offensive_shots, "btn-danger", "redOffense")}}
 
     {{score_button(game, game.red_d.get(), defensive_shots, "btn-danger", "redDefense")}}
-</div>
+
 </div>
 
 {% endblock body %}

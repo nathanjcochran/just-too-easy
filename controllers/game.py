@@ -1,3 +1,4 @@
+import json
 import webapp2
 import jinja2
 from random import shuffle
@@ -33,9 +34,9 @@ class NewGame(webapp2.RequestHandler):
         if len(url_keys) != 4:
             players = Player.query()
             model = {
-                'players':players,
-                'error':'Please select exactly 4 players'
-            }
+                    'players':players,
+                    'error':'Please select exactly 4 players'
+                    }
 
             template = jinja.get_template('new_game.html')
             self.response.write(template.render(model))
@@ -77,10 +78,10 @@ class PlayGame(webapp2.RequestHandler):
 
         # Lots of gets, here.  Possibly rethink:
         values = {
-            'game' : game,
-            'offensive_shots' : [s for s in shot_types if s.position != Position.defense],
-            'defensive_shots' : [s for s in shot_types if s.position != Position.offense],
-        }
+                'game' : game,
+                'offensive_shots' : [s for s in shot_types if s.position != Position.defense],
+                'defensive_shots' : [s for s in shot_types if s.position != Position.offense],
+                }
 
         template = jinja.get_template('play_game.html')
         self.response.write(template.render(values))
@@ -97,7 +98,7 @@ class PlayGame(webapp2.RequestHandler):
         side, position = game.side_and_position(player_key)
 
         # Create the shot record:
-        shot = Shot(ancestor = game.key)
+        shot = Shot(parent = game.key)
         shot.player = player_key
         shot.position = position
         shot.side = side
@@ -105,8 +106,9 @@ class PlayGame(webapp2.RequestHandler):
 
         # If red scored:
         if side == Side.red:
-            game.red_shots.append(shot.key)
             shot.against = game.blue_d
+            shot.put()
+            game.red_shots.append(shot.key)
 
             # Mark game complete if over:
             if len(game.red_shots) >= game.length:
@@ -114,17 +116,28 @@ class PlayGame(webapp2.RequestHandler):
 
         # If blue scored:
         elif side == Side.blue:
-            game.blue_shots.append(shot.key)
             shot.against = game.red_d
+            shot.put()
+            game.blue_shots.append(shot.key)
 
             # Mark game complete if over:
             if len(game.blue_shots) >= game.length:
                 game.status = GameStatus.complete
 
-        shot.put()
         game.put()
 
-        self.redirect('/game/play?key=' + game.key.urlsafe())
+        response = {
+            'success' : True,
+            'side' : side.name,
+            'position' : position.name,
+            'red_score' : len(game.red_shots),
+            'red_score_percentage' : game.red_score_percentage(),
+            'blue_score' : len(game.blue_shots),
+            'blue_score_percentage' : game.blue_score_percentage()
+        }
+
+        self.response.write(json.dumps(response))
+        self.response.status = 200
 
 
 app = webapp2.WSGIApplication([

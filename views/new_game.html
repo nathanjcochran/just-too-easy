@@ -14,34 +14,33 @@
 
 {% block body %}
 
-<div class="container">
-    <h1>New Game</h1>
+<h1>New Game</h1>
 
-    {% if error %}
-    <p class="alert alert-danger">{{error}}</p>
-    {% endif %}
+{% if error %}
+<p class="alert alert-danger">{{error}}</p>
+{% endif %}
 
-    <fieldset>
-        <legend>Select Players:</legend>
-        <form class="form-horizontal" role="form" action="/game/new" method="post">
-            <select name="players" class="player-select" multiple size="4">
-                {% for player in players %}
+<fieldset>
+    <legend>Select Players:</legend>
+    <form class="form-horizontal" role="form" action="/game/new" method="post">
+        <select name="players" class="player-select" multiple size="4">
+            {% for player in players %}
 
-                <option class="col-xs-3"
-                    data-img-src="/players/image?key={{player.image.urlsafe()}}"
-                    data-img-label={{player.name}}
-                    value="{{player.key.urlsafe()}}"></option>
+            <option class="col-xs-3"
+                data-img-src="/players/image?key={{player.image.urlsafe()}}"
+                data-img-label={{player.name}}
+                value="{{player.key.urlsafe()}}">
+            </option>
 
-                {% endfor %}
-            </select>
+            {% endfor %}
+        </select>
 
-            <div class="form-group">
-                <div class="col-xs-12">
-                    <input type="submit" value="Submit" class="btn btn-default"/>
-                </div>
+        <div class="form-group">
+            <div class="col-xs-12">
+                <input type="submit" value="Submit" class="btn btn-default"/>
             </div>
-        </form>
-    </fieldset>
-</div>
+        </div>
+    </form>
+</fieldset>
 
 {% endblock body %}

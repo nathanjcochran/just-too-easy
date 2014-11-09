@@ -10,6 +10,10 @@ jinja = jinja2.Environment(
         extensions=['jinja2.ext.autoescape'],
         autoescape=True)
 
+def entity_from_url_key(url_key):
+    key = ndb.Key(urlsafe = url_key)
+    return key.get()
+
 class NewGame(webapp2.RequestHandler):
     """
     User selects 4 players to start game:
@@ -38,23 +42,48 @@ class NewGame(webapp2.RequestHandler):
             return
 
         # Get players:
-        players = []
+        player_keys = []
         for url_key in url_keys:
             player_key = ndb.Key(urlsafe = url_key)
-            player = player_key.get()
-            players.append(player)
+            player_keys.append(player_key)
 
         # Randomize
-        shuffle(players)
+        shuffle(player_keys)
 
         # Create game:
         game = Game()
         game.length = GAME_LENGTH
         game.status = GameStatus.active
-        game.red_offense = players[0].key
-        game.red_defense = players[1].key
-        game.blue_offense = players[2].key
-        game.blue_defense = players[3].key
+
+        # Red Offense:
+        actor = Actor()
+        actor.player = player_keys[0]
+        actor.side = Position.red
+        actor.position = Position.offense
+        game.players.append(actor)
+
+        # Red Defense:
+        actor = Actor()
+        actor.player = player_keys[1]
+        actor.side = Position.red
+        actor.position = Position.defense
+        game.players.append(actor)
+
+        # Blue Offense:
+        actor = Actor()
+        actor.player = player_keys[2]
+        actor.side = Position.blue
+        actor.position = Position.offense
+        game.players.append(actor)
+
+        # Blue Defense:
+        actor = Actor()
+        actor.player = player_keys[3]
+        actor.side = Position.blue
+        actor.position = Position.defense
+        game.players.append(actor)
+
+        # Persist it:
         game.put()
 
         self.redirect('/game/play?key=' + game.key.urlsafe())
@@ -64,21 +93,62 @@ class PlayGame(webapp2.RequestHandler):
     Play a game.  Shows score and reveals scoring buttons.
     """
     def get(self):
-
         url_key = self.request.get('key')
         game_key = ndb.Key(urlsafe = url_key)
         game = game_key.get()
 
         # Lots of gets, here.  Possibly rethink:
         values = {
-                'red_o' : game.red_offense.get(),
-                'red_d' : game.red_defense.get(),
-                'blue_o' : game.blue_offense.get(),
-                'blue_d' : game.blue_defense.get()
-                }
+            'red_o' : game.player(Side.red, Position.offense).get()
+            'red_d' : game.player(Side.red, Position.defense).get()
+            'blue_o' : game.player(Side.blue, Position.offense).get()
+            'blue_d' : game.player(Side.blue, Position.defense).get()
+        }
 
         template = jinja.get_template('play_game.html')
         self.response.write(template.render(values))
+
+    """
+    Score a point, advance the game
+    """
+    def post(self):
+        game = entity_from_url_key(self.request.get('game_key'))
+        shot_type_key = ndb.Key(urlsafe = self.request.get('shot_type_key'))
+        player_key = ndb.Key(urlsafe = self.request.get('player_key'))
+
+        # Get the actor who made the shot:
+        actor = next(a for a in game.actors if a.player == player_key)
+
+        # Create the shot record:
+        shot = Shot(ancestor = game.key)
+        shot.player = player_key
+        shot.position = actor.position
+        shot.side = actor.side
+        shot.shot_type = shot_type_key
+
+        # If red scored:
+        if actor.side == Side.red:
+            game.red_shots.append(shot.key)
+            shot.against = game.player(Side.blue, Position.defense)
+
+            # Mark game complete if over:
+            if len(game.red_shots) >= game.length)
+                game.status = GameStatus.complete
+
+        # If blue scored:
+        elif actor.side == Side.blue:
+            game.blue_shots.append(shot.key)
+            shot.against = game.player(Side.red, Position.defense)
+
+            # Mark game complete if over:
+            if len(game.blue_shots) >= game.length)
+                game.status = GameStatus.complete
+
+        shot.put()
+        game.put()
+
+        self.redirect('/game/play?key=' + game.key.urlsafe())
+
 
 app = webapp2.WSGIApplication([
     ('/game/new', NewGame),

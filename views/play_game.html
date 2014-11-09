@@ -42,23 +42,29 @@
 
 {% block body %}
 
+<br><br>
+
+<div class="row">
+    <div class="col-xs-offset-1 col-xs-10">
+        <div class="progress">
+            <div id="blue-score" class="progress-bar" role="progressbar" style="width: {{game.blue_score_percentage()}}%;">
+                {{game.blue_shots | length}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-offset-1 col-xs-10">
+        <div class="progress">
+            <div id="red-score" class="progress-bar progress-bar-danger" role="progressbar" style="width: {{game.red_score_percentage()}}%;">
+                {{game.red_shots | length}}
+            </div>
+        </div>
+    </div>
+</div>
+
 <br><br><br><br>
-
-<div class="row">
-    <div class="progress">
-        <div id="blue-score" class="progress-bar" role="progressbar" style="width: {{game.blue_score_percentage()}}%;">
-            {{game.blue_shots | length}}
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="progress">
-        <div id="red-score" class="progress-bar progress-bar-danger" role="progressbar" style="width: {{game.red_score_percentage()}}%;">
-            {{game.red_shots | length}}
-        </div>
-    </div>
-</div>
 
 <div class="row">
 

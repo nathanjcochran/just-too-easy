@@ -78,10 +78,10 @@ class PlayGame(webapp2.RequestHandler):
 
         # Lots of gets, here.  Possibly rethink:
         values = {
-                'game' : game,
-                'offensive_shots' : [s for s in shot_types if s.position != Position.defense],
-                'defensive_shots' : [s for s in shot_types if s.position != Position.offense],
-                }
+            'game' : game,
+            'offensive_shots' : [s for s in shot_types if s.position != Position.defense],
+            'defensive_shots' : [s for s in shot_types if s.position != Position.offense],
+        }
 
         template = jinja.get_template('play_game.html')
         self.response.write(template.render(values))
@@ -128,8 +128,7 @@ class PlayGame(webapp2.RequestHandler):
 
         response = {
             'success' : True,
-            'side' : side.name,
-            'position' : position.name,
+            'game_over' : game.status != GameStatus.active,
             'red_score' : len(game.red_shots),
             'red_score_percentage' : game.red_score_percentage(),
             'blue_score' : len(game.blue_shots),

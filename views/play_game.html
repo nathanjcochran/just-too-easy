@@ -9,7 +9,7 @@
 
 {# Score Button #}
 <div class="col-xs-6">
-    <button type="button" class="btn {{btn_class}} btn-block" data-toggle="modal" data-target="#{{id}}Modal">{{player.name}}</button>
+    <button type="button" class="btn {{btn_class}} btn-block score-btn" data-toggle="modal" data-target="#{{id}}Modal">{{player.name}}</button>
 </div>
 
 {# Modal #}
@@ -44,6 +44,14 @@
 
 <br><br>
 
+<div class="error-message alert alert-danger" role="alert"></div>
+
+{% if game.isComplete() %}
+    <div class="game-over-message alert alert-success" data-game-over="true" role="alert">This game is complete.</div>
+{% else %}
+    <div class="game-over-message alert alert-success" role="alert"></div>
+{% endif %}
+
 <div class="row">
     <div class="col-xs-offset-1 col-xs-10">
         <div class="progress">
@@ -64,6 +72,8 @@
     </div>
 </div>
 
+
+{% if not game.isComplete() %}
 <br><br><br><br>
 
 <div class="row">
@@ -87,5 +97,7 @@
     {{score_button(game, game.red_d.get(), defensive_shots, "btn-danger", "redDefense")}}
 
 </div>
+
+{% endif %}
 
 {% endblock body %}

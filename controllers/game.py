@@ -3,6 +3,7 @@ import webapp2
 import jinja2
 from random import shuffle
 from models import *
+from google.appengine.api import memcache
 
 GAME_LENGTH = 6
 
@@ -28,15 +29,15 @@ class NewGame(webapp2.RequestHandler):
     Randomly assign players' positions, create game:
     """ 
     def post(self):
-        url_keys = self.request.get('players', allow_multiple=True)
+        url_keys = self.request.get_all('players')
 
         # Incorrect number of players:
         if len(url_keys) != 4:
             players = Player.query()
             model = {
-                    'players':players,
-                    'error':'Please select exactly 4 players'
-                    }
+                'players':players,
+                'error':'Please select exactly 4 players'
+            }
 
             template = jinja.get_template('new_game.html')
             self.response.write(template.render(model))
@@ -71,20 +72,28 @@ class PlayGame(webapp2.RequestHandler):
     """
     def get(self):
         url_key = self.request.get('key')
+
+        if not url_key:
+            players = Player.query()
+            players_dict = {p.key : p.name for p in players}
+
+            active_games = Game.query(Game.status == GameStatus.active).order(-Game.timestamp).fetch()
+            template = jinja.get_template('view_games.html')
+            self.response.write(template.render({"active_games":active_games, "players":players_dict}))
+            return;
+
         game_key = ndb.Key(urlsafe = url_key)
         game = game_key.get()
-
         shot_types = ShotType.query()
 
-        # Lots of gets, here.  Possibly rethink:
-        values = {
+        model = {
             'game' : game,
             'offensive_shots' : [s for s in shot_types if s.position != Position.defense],
             'defensive_shots' : [s for s in shot_types if s.position != Position.offense],
         }
 
         template = jinja.get_template('play_game.html')
-        self.response.write(template.render(values))
+        self.response.write(template.render(model))
 
     """
     Score a point, advance the game

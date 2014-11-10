@@ -54,6 +54,9 @@ class Game(ndb.Model):
     def blue_score_percentage(self):
         return len(self.blue_shots) / float(self.length) * 100.0
 
+    def isComplete(self):
+        return self.status == GameStatus.complete
+
 class Shot(ndb.Model): # ancestor = Game => strongly consistent results
     player = ndb.KeyProperty(kind='Player', required=True)
     position = msgprop.EnumProperty(Position, required=True)

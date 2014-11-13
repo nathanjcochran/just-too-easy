@@ -1,5 +1,54 @@
 $(document).ready(function() {
-    $(".error-message").hide();
+    function updateRedScore(score, percentage){
+        redScore = $("#red-score");
+        redScore.css("width", percentage + "%");
+        redScore.text(score);
+    };
+
+    function updateBlueScore(score, percentage){
+        redScore = $("#blue-score");
+        redScore.css("width", percentage + "%");
+        redScore.text(score);
+    };
+
+    function resetError(message) {
+        var errorMsg = $(".error-message");
+        errorMsg.hide();
+    };
+
+    function showError(message) {
+        var errorMsg = $(".error-message");
+        errorMsg.text(message);
+        errorMsg.show();
+    };
+
+    function resetHalfTime(message) {
+        var halfTimeMsg = $(".half-time-message");
+        halfTimeMsg.hide();
+    };
+
+    function redHalfTime(message) {
+        var temp = $(".red-o").text();
+        $(".red-o").text($(".red-d").text());
+        $(".red-d").text(temp);
+
+        var halfTimeMsg = $(".half-time-message");
+        halfTimeMsg.text(message);
+        halfTimeMsg.show();
+    };
+
+    function blueHalfTime(message) {
+        var temp = $(".blue-o").text();
+        $(".blue-o").text($(".blue-d").text());
+        $(".blue-d").text(temp);
+
+        var halfTimeMsg = $(".half-time-message");
+        halfTimeMsg.text(message);
+        halfTimeMsg.show();
+    };
+
+    resetError();
+    resetHalfTime();
 
     var gameOverMsg = $(".game-over-message");
     if(!gameOverMsg.data("game-over")) {
@@ -12,6 +61,7 @@ $(document).ready(function() {
             player_key : $(this).data("player"),
         };
 
+
         $.ajax({
             type: "POST",
             dataType : "json",
@@ -19,31 +69,29 @@ $(document).ready(function() {
             data : data,
             success : function(data, textStatus) {
                 if(data.success) {
-                    $(".error-message").hide();
-                    redScore = $("#red-score");
-                    redScore.css("width", data.red_score_percentage + "%");
-                    redScore.text(data.red_score);
+                    resetError();
+                    resetHalfTime();
+                    updateRedScore(data.red_score, data.red_score_percentage);
+                    updateBlueScore(data.blue_score, data.blue_score_percentage);
 
-                    blueScore = $("#blue-score");
-                    blueScore.css("width", data.blue_score_percentage + "%");
-                    blueScore.text(data.blue_score);
-
-                    if(data.game_over) {
+                    if(data.half_time === "red") {
+                        redHalfTime(data.message);
+                    }
+                    else if(data.half_time === "blue") {
+                        blueHalfTime(data.message);
+                    }
+                    else if(data.game_over) {
                         $(".score-btn").hide();
                         $(".game-over-message").text("Game over!");
                         $(".game-over-message").show();
                     }
                 }
                 else {
-                    var errorMsg = $(".error-message");
-                    errorMsg.text("Oops! Something went wrong on our end.  Please try again.");
-                    errorMsg.show();
+                    showError(data.message);
                 }
             },
             error : function(data, textStatus, errorThrown) {
-                var errorMsg = $(".error-message");
-                errorMsg.text("Oops! Something went wrong.  Please try again.");
-                errorMsg.show();
+                showError("Oops! Something went wrong.  Please try again.");
             }
         });
     });

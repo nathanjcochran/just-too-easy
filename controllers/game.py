@@ -96,51 +96,62 @@ class PlayGame(webapp2.RequestHandler):
     Score a point, advance the game
     """
     def post(self):
-        game = entity_from_url_key(self.request.get('game_key'))
-        player_key = ndb.Key(urlsafe = self.request.get('player_key'))
+        try:
+            game_url_key = self.request.get('game_key')
+            if not game_url_key:
+                raise Exception('Error: no game key')
+            
+            game_key = ndb.Key(urlsafe = game_url_key)
+            if not game_key:
+                raise Exception('Error: invalid game key')
 
-        # Get the actor who made the shot:
-        side, position = game.side_and_position(player_key)
+            game = game_key.get()
 
-        # Create the shot record:
-        shot = Shot(parent = game.key)
-        shot.player = player_key
-        shot.position = position
-        shot.side = side
+            player_url_key = self.request.get('player_key')
+            if not player_url_key:
+                raise Exception('Error: no player_key')
 
-        # If red scored:
-        if side == Side.red:
-            shot.against = game.blue_d
-            shot.put()
-            game.red_shots.append(shot.key)
+            player_key = ndb.Key(urlsafe = player_url_key)
+            if not player_key:
+                raise Exception('Error: invalid player key')
 
-            # Mark game complete if over:
-            if len(game.red_shots) >= game.length:
-                game.status = GameStatus.complete
+            red_score = game.red_score()
+            blue_score = game.blue_score()
 
-        # If blue scored:
-        elif side == Side.blue:
-            shot.against = game.red_d
-            shot.put()
-            game.blue_shots.append(shot.key)
+            game.register_shot(player_key)
 
-            # Mark game complete if over:
-            if len(game.blue_shots) >= game.length:
-                game.status = GameStatus.complete
+            half_time = None
+            message = None
+            if (game.blue_score() == game.length / 2) and (game.blue_score() == blue_score + 1):
+                half_time = Side.blue
+                message = "Blue half-time!"
+            elif (game.red_score() == game.length / 2) and (game.red_score() == red_score + 1):
+                half_time = Side.red
+                message = "Red half-time!"
 
-        game.put()
+        except Exception, e:
+            response = {
+                'success' : False,
+                'message' : e.args[0]
+            }
 
-        response = {
-            'success' : True,
-            'game_over' : game.status != GameStatus.active,
-            'red_score' : len(game.red_shots),
-            'red_score_percentage' : game.red_score_percentage(),
-            'blue_score' : len(game.blue_shots),
-            'blue_score_percentage' : game.blue_score_percentage()
-        }
+            self.response.write(json.dumps(response))
+            self.response.status = 200
 
-        self.response.write(json.dumps(response))
-        self.response.status = 200
+        else:
+            response = {
+                'success' : True,
+                'message' : message,
+                'game_over' : game.status != GameStatus.active,
+                'half_time' : str(half_time),
+                'red_score' : len(game.red_shots),
+                'red_score_percentage' : game.red_score_percentage(),
+                'blue_score' : len(game.blue_shots),
+                'blue_score_percentage' : game.blue_score_percentage()
+            }
+
+            self.response.write(json.dumps(response))
+            self.response.status = 200
 
 
 app = webapp2.WSGIApplication([

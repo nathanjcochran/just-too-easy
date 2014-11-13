@@ -26,6 +26,7 @@
     <div class="game-over-message alert alert-success" data-game-over="true" role="alert">This game is complete.</div>
 {% else %}
     <div class="game-over-message alert alert-success" role="alert"></div>
+    <div class="half-time-message alert alert-info" role="alert"></div>
 {% endif %}
 
 <div class="row">
@@ -56,9 +57,9 @@
 
     {# Blue #}
 
-    {{score_button(game, game.blue_o.get(), offensive_shots, "btn-primary")}}
+    {{score_button(game, game.blue_o.get(), offensive_shots, "btn-primary blue-o")}}
 
-    {{score_button(game, game.blue_d.get(), defensive_shots, "btn-primary")}}
+    {{score_button(game, game.blue_d.get(), defensive_shots, "btn-primary blue-d")}}
 
 </div>
 
@@ -68,9 +69,9 @@
 
     {# Red #}
 
-    {{score_button(game, game.red_o.get(), offensive_shots, "btn-danger")}}
+    {{score_button(game, game.red_d.get(), defensive_shots, "btn-danger red-d")}}
 
-    {{score_button(game, game.red_d.get(), defensive_shots, "btn-danger")}}
+    {{score_button(game, game.red_o.get(), offensive_shots, "btn-danger red-o")}}
 
 </div>
 

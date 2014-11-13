@@ -47,6 +47,10 @@ $(document).ready(function() {
         halfTimeMsg.show();
     };
 
+    $(function() {
+        FastClick.attach(document.body);
+    });
+
     resetError();
     resetHalfTime();
 
@@ -60,7 +64,6 @@ $(document).ready(function() {
             game_key : $(this).data("game"),
             player_key : $(this).data("player"),
         };
-
 
         $.ajax({
             type: "POST",

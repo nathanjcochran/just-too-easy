@@ -5,37 +5,13 @@
 {% endblock %}
 
 {# ---- Score Button Macro ---- #}
-{% macro score_button(game, player, shot_types, btn_class, id) %}
+{% macro score_button(game, player, shot_types, btn_class) %}
 
 {# Score Button #}
 <div class="col-xs-6">
-    <button type="button" class="btn {{btn_class}} btn-block score-btn" data-toggle="modal" data-target="#{{id}}Modal">{{player.name}}</button>
-</div>
-
-{# Modal #}
-<div class="modal" id="{{id}}Modal" tabindex="-1" role="dialog" aria-labelledby="{{id}}ModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="{{id}}ModalLabel">Shot Type:</h4>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="btn-group-vertical col-xs-12" data-game="{{game.key.urlsafe()}}" data-player="{{player.key.urlsafe()}}">
-                        {% for shot_type in shot_types %}
-
-                        <button class="btn btn-default btn-shot-type" data-shot-type="{{shot_type.key.urlsafe()}}">{{shot_type.name}}</button>
-
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
+    <button type="button" class="btn {{btn_class}} btn-block score-btn" 
+        data-game="{{game.key.urlsafe()}}"
+        data-player="{{player.key.urlsafe()}}">{{player.name}}</button>
 </div>
 
 {% endmacro %}
@@ -80,9 +56,9 @@
 
     {# Blue #}
 
-    {{score_button(game, game.blue_o.get(), offensive_shots, "btn-primary", "blueOffense")}}
+    {{score_button(game, game.blue_o.get(), offensive_shots, "btn-primary")}}
 
-    {{score_button(game, game.blue_d.get(), defensive_shots, "btn-primary", "blueDefense")}}
+    {{score_button(game, game.blue_d.get(), defensive_shots, "btn-primary")}}
 
 </div>
 
@@ -92,9 +68,9 @@
 
     {# Red #}
 
-    {{score_button(game, game.red_o.get(), offensive_shots, "btn-danger", "redOffense")}}
+    {{score_button(game, game.red_o.get(), offensive_shots, "btn-danger")}}
 
-    {{score_button(game, game.red_d.get(), defensive_shots, "btn-danger", "redDefense")}}
+    {{score_button(game, game.red_d.get(), defensive_shots, "btn-danger")}}
 
 </div>
 

@@ -84,12 +84,9 @@ class PlayGame(webapp2.RequestHandler):
 
         game_key = ndb.Key(urlsafe = url_key)
         game = game_key.get()
-        shot_types = ShotType.query()
 
         model = {
             'game' : game,
-            'offensive_shots' : [s for s in shot_types if s.position != Position.defense],
-            'defensive_shots' : [s for s in shot_types if s.position != Position.offense],
         }
 
         template = jinja.get_template('play_game.html')
@@ -100,7 +97,6 @@ class PlayGame(webapp2.RequestHandler):
     """
     def post(self):
         game = entity_from_url_key(self.request.get('game_key'))
-        shot_type_key = ndb.Key(urlsafe = self.request.get('shot_type_key'))
         player_key = ndb.Key(urlsafe = self.request.get('player_key'))
 
         # Get the actor who made the shot:
@@ -111,7 +107,6 @@ class PlayGame(webapp2.RequestHandler):
         shot.player = player_key
         shot.position = position
         shot.side = side
-        shot.shot_type = shot_type_key
 
         # If red scored:
         if side == Side.red:

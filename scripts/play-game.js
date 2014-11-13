@@ -6,15 +6,11 @@ $(document).ready(function() {
         gameOverMsg.hide();
     }
 
-    $(".btn-shot-type").click(function(){
-        var buttonGroup = $(this).parent();
+    $(".score-btn").click(function(){
         var data = {
-            game_key : buttonGroup.data("game"),
-            player_key : buttonGroup.data("player"),
-            shot_type_key  : $(this).data("shot-type"),
+            game_key : $(this).data("game"),
+            player_key : $(this).data("player"),
         };
-
-        buttonGroup.parents(".modal").modal('hide');
 
         $.ajax({
             type: "POST",

@@ -11,9 +11,6 @@ handlers:
 - url: /players.*
   script: controllers.players.app
 
-- url: /shot_types.*
-  script: controllers.shot_types.app
-
 - url: /game.*
   script: controllers.game.app
 

@@ -62,25 +62,4 @@ class Shot(ndb.Model): # ancestor = Game => strongly consistent results
     position = msgprop.EnumProperty(Position, required=True)
     side = msgprop.EnumProperty(Side, required=True)
     against = ndb.KeyProperty(kind='Player', required=True)
-    shot_type = ndb.KeyProperty(kind='ShotType')
     timestamp = ndb.DateTimeProperty(auto_now_add=True, required=True)
-
-class ShotType(ndb.Model):
-    name = ndb.StringProperty(required=True)
-    position = msgprop.EnumProperty(Position)
-
-
-#
-# How many games has X won?
-#
-# How many games has X won with Y on his/her team?
-#
-# How many games has X won against Y?
-#
-# How many shots has X made against Y?
-# 
-# Who has made the most shots of type X?
-#
-#
-#
-#

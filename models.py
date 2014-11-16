@@ -110,15 +110,8 @@ class Game(ndb.Model):
     def red_score(self):
         return len(self.red_shots)
 
-    def red_score_percentage(self):
-        return len(self.red_shots) / float(self.length) * 100.0
-
     def blue_score(self):
         return len(self.blue_shots)
-
-    def blue_score_percentage(self):
-        return len(self.blue_shots) / float(self.length) * 100.0
-
 
 class Shot(ndb.Model): # ancestor = Game => strongly consistent results
     player = ndb.KeyProperty(kind='Player', required=True)

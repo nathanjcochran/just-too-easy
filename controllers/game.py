@@ -120,15 +120,6 @@ class PlayGame(webapp2.RequestHandler):
 
             game.register_shot(player_key)
 
-            half_time = None
-            message = None
-            if (game.blue_score() == game.length / 2) and (game.blue_score() == blue_score + 1):
-                half_time = Side.blue
-                message = "Blue half-time!"
-            elif (game.red_score() == game.length / 2) and (game.red_score() == red_score + 1):
-                half_time = Side.red
-                message = "Red half-time!"
-
         except Exception, e:
             response = {
                 'success' : False,
@@ -141,13 +132,9 @@ class PlayGame(webapp2.RequestHandler):
         else:
             response = {
                 'success' : True,
-                'message' : message,
                 'game_over' : game.status != GameStatus.active,
-                'half_time' : str(half_time),
                 'red_score' : len(game.red_shots),
-                'red_score_percentage' : game.red_score_percentage(),
                 'blue_score' : len(game.blue_shots),
-                'blue_score_percentage' : game.blue_score_percentage()
             }
 
             self.response.write(json.dumps(response))

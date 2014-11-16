@@ -1,69 +1,138 @@
 $(document).ready(function() {
-    function updateRedScore(score, percentage){
-        redScore = $("#red-score");
-        redScore.css("width", percentage + "%");
-        redScore.text(score);
-    };
-
-    function updateBlueScore(score, percentage){
-        redScore = $("#blue-score");
-        redScore.css("width", percentage + "%");
-        redScore.text(score);
-    };
-
-    function resetError(message) {
-        var errorMsg = $(".error-message");
-        errorMsg.hide();
+    function resetMessage() {
+        var msg = $(".message");
+        msg.removeClass("alert-success");
+        msg.removeClass("alert-warning");
+        msg.removeClass("alert-danger");
+        msg.hide();
     };
 
     function showError(message) {
-        var errorMsg = $(".error-message");
-        errorMsg.text(message);
-        errorMsg.show();
+        var msg = $(".message");
+        msg.addClass("alert-danger");
+        msg.text(message);
+        msg.show();
     };
 
-    function resetHalfTime(message) {
-        var halfTimeMsg = $(".half-time-message");
-        halfTimeMsg.hide();
+    function showWarning(message) {
+        var msg = $(".message");
+        msg.addClass("alert-warning");
+        msg.text(message);
+        msg.show();
+    }
+
+    function showSuccess(message) {
+        var msg = $(".message");
+        msg.addClass("alert-success");
+        msg.text(message);
+        msg.show();
+    }
+
+    function verifyRedScore(score) {
+        var redScore = +$(".red-score").text();
+        if(redScore !== score) {
+            showError("Error: Red score does not match server score of: " + score + ". Please refresh for most up-to-date game state");
+        }
+    }
+
+    function verifyBlueScore(score) {
+        var blueScore = +$(".blue-score").text();
+        if(blueScore !== score) {
+            showError("Error: Blue score does not match server score of: " + score + ". Please refresh for most up-to-date game state");
+        }
+    }
+
+    function incRedScore(){
+        var redScoreDiv = $(".red-score");
+        var redScore = +redScoreDiv.text() + 1;
+        redScoreDiv.text(redScore);
+        var gameLength = +redScoreDiv.data("game-length");
+
+        if(redScore === gameLength/2) {
+            redHalfTime();
+        }
+        else if(redScore === gameLength) {
+            gameOver("Game over - Red wins!");
+        }
     };
 
-    function redHalfTime(message) {
-        var temp = $(".red-o").text();
-        $(".red-o").text($(".red-d").text());
-        $(".red-d").text(temp);
+    function incBlueScore(){
+        var blueScoreDiv = $(".blue-score");
+        var blueScore = +blueScoreDiv.text() + 1;
+        blueScoreDiv.text(blueScore);
+        var gameLength = +blueScoreDiv.data("game-length");
 
-        var halfTimeMsg = $(".half-time-message");
-        halfTimeMsg.text(message);
-        halfTimeMsg.show();
+        if(blueScore === gameLength/2) {
+            blueHalfTime();
+        }
+        else if(blueScore === gameLength) {
+            gameOver("Game over - Blue wins!");
+        }
     };
 
-    function blueHalfTime(message) {
-        var temp = $(".blue-o").text();
-        $(".blue-o").text($(".blue-d").text());
-        $(".blue-d").text(temp);
+    function redHalfTime() {
+        var red_o = $(".btn-red-o");
+        var red_d = $(".btn-red-d");
 
-        var halfTimeMsg = $(".half-time-message");
-        halfTimeMsg.text(message);
-        halfTimeMsg.show();
+        var tempName = red_o.text();
+        var tempPlayer = red_o.data("player");
+
+        red_o.text(red_d.text());
+        red_o.data("player", red-d.data("player"));
+
+        red_d.text(tempName);
+        red_d.data("player", tempPlayer);
+
+        showWarning("Red half-time!");
+    };
+
+    function blueHalfTime() {
+        var blue_o = $(".btn-blue-o");
+        var blue_d = $(".btn-blue-d");
+
+        var tempName = blue_o.text();
+        var tempPlayer = blue_o.data("player");
+
+        blue_o.text(blue_d.text());
+        blue_o.data("player", blue-d.data("player"));
+
+        blue_d.text(tempName);
+        blue_d.data("player", tempPlayer);
+
+        showWarning("Blue half-time!");
+    };
+
+    function gameOver(message) {
+        $(".score-btn").hide();
+        showSuccess(message);
     };
 
     $(function() {
         FastClick.attach(document.body);
     });
 
-    resetError();
-    resetHalfTime();
-
-    var gameOverMsg = $(".game-over-message");
-    if(!gameOverMsg.data("game-over")) {
-        gameOverMsg.hide();
-    }
+    resetMessage();
 
     $(".score-btn").click(function(){
+        resetMessage();
+
+        if($(this).hasClass("btn-red")) {
+            incRedScore();
+        }
+        else if($(this).hasClass("btn-blue")) {
+            incBlueScore();
+        }
+        else {
+            showError("Invalid button click");
+            return;
+        }
+
         var data = {
             game_key : $(this).data("game"),
             player_key : $(this).data("player"),
         };
+
+        $(".score-btn").prop("disabled", true);
 
         $.ajax({
             type: "POST",
@@ -72,25 +141,9 @@ $(document).ready(function() {
             data : data,
             success : function(data, textStatus) {
                 if(data.success) {
-                    resetError();
-                    resetHalfTime();
-                    updateRedScore(data.red_score, data.red_score_percentage);
-                    updateBlueScore(data.blue_score, data.blue_score_percentage);
-
-                    if(data.half_time === "red") {
-                        redHalfTime(data.message);
-                    }
-                    else if(data.half_time === "blue") {
-                        blueHalfTime(data.message);
-                    }
-                    else if(data.game_over) {
-                        $(".score-btn").hide();
-                        $(".game-over-message").text("Game over!");
-                        $(".game-over-message").show();
-                    }
-                }
-                else {
-                    showError(data.message);
+                    verifyRedScore(data.red_score);
+                    verifyBlueScore(data.blue_score);
+                    $(".score-btn").prop("disabled", false);
                 }
             },
             error : function(data, textStatus, errorThrown) {

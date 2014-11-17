@@ -19,28 +19,30 @@ $(document).ready(function() {
         msg.addClass("alert-warning");
         msg.text(message);
         msg.show();
-    }
+    };
 
     function showSuccess(message) {
         var msg = $(".message");
         msg.addClass("alert-success");
         msg.text(message);
         msg.show();
-    }
+    };
 
     function verifyRedScore(score) {
         var redScore = +$(".red-score").text();
-        if(redScore !== score) {
-            showError("Error: Red score does not match server score of: " + score + ". Please refresh for most up-to-date game state");
+        if(redScore === score) {
+            return true;
         }
-    }
+        return false;
+    };
 
     function verifyBlueScore(score) {
         var blueScore = +$(".blue-score").text();
-        if(blueScore !== score) {
-            showError("Error: Blue score does not match server score of: " + score + ". Please refresh for most up-to-date game state");
+        if(blueScore === score) {
+            return true;
         }
-    }
+        return false;
+    };
 
     function incRedScore(){
         var redScoreDiv = $(".red-score");
@@ -78,7 +80,7 @@ $(document).ready(function() {
         var tempPlayer = red_o.data("player");
 
         red_o.text(red_d.text());
-        red_o.data("player", red-d.data("player"));
+        red_o.data("player", red_d.data("player"));
 
         red_d.text(tempName);
         red_d.data("player", tempPlayer);
@@ -94,7 +96,7 @@ $(document).ready(function() {
         var tempPlayer = blue_o.data("player");
 
         blue_o.text(blue_d.text());
-        blue_o.data("player", blue-d.data("player"));
+        blue_o.data("player", blue_d.data("player"));
 
         blue_d.text(tempName);
         blue_d.data("player", tempPlayer);
@@ -108,7 +110,7 @@ $(document).ready(function() {
     };
 
     $(function() {
-        FastClick.attach(document.body);
+        Origami.fastclick(document.body);
     });
 
     resetMessage();
@@ -141,9 +143,15 @@ $(document).ready(function() {
             data : data,
             success : function(data, textStatus) {
                 if(data.success) {
-                    verifyRedScore(data.red_score);
-                    verifyBlueScore(data.blue_score);
-                    $(".score-btn").prop("disabled", false);
+                    if(!verifyBlueScore(data.blue_score)) {
+                        showError("Error: Blue score does not match server score of: " + data.blue_score + ". Please refresh for most up-to-date game state");
+                    }
+                    else if(!verifyRedScore(data.red_score)) {
+                        showError("Error: Red score does not match server score of: " + data.red_score + ". Please refresh for most up-to-date game state");
+                    }
+                    else {
+                        $(".score-btn").prop("disabled", false);
+                    }
                 }
             },
             error : function(data, textStatus, errorThrown) {

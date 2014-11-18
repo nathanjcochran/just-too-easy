@@ -118,6 +118,11 @@ $(document).ready(function() {
     $(".score-btn").click(function(){
         resetMessage();
 
+        var data = {
+            game_key : $(this).data("game"),
+            player_key : $(this).data("player"),
+        };
+
         if($(this).hasClass("btn-red")) {
             incRedScore();
         }
@@ -128,11 +133,6 @@ $(document).ready(function() {
             showError("Invalid button click");
             return;
         }
-
-        var data = {
-            game_key : $(this).data("game"),
-            player_key : $(this).data("player"),
-        };
 
         $(".score-btn").prop("disabled", true);
 

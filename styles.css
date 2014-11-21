@@ -1,12 +1,18 @@
 .player-button {
+  box-sizing: border-box;
   background: #eb5032;
   width: 48%;
   border-radius: 2px;
   color: #fff;
   font-size: 32px;
   text-align: center;
-  padding: 0.5em 1em;
+  padding: 1em 1em;
+  float: left;
+  margin: 0 0 1em 4%;
+  border: 0;
+  -webkit-appearance: none;
 }
 .player-button.blue {
   background: #1680e2;
+  margin-left: 0;
 }

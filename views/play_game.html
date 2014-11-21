@@ -10,7 +10,7 @@
 
 {# Score Button #}
 <div class="col-xs-6">
-    <button type="button" class="btn {{btn_class}} btn-block score-btn" 
+    <button type="button" class="player-button {{btn_class}}" 
         data-game="{{game.key.urlsafe()}}"
         data-player="{{player.key.urlsafe()}}">{{player.name}}</button>
 </div>
@@ -44,19 +44,13 @@
 
 <div class="row">
 
-    {{score_button(game, game.blue_d.get(), defensive_shots, "btn-primary btn-blue btn-blue-d")}}
+    {{score_button(game, game.blue_d.get(), defensive_shots, "blue btn-blue-d")}}
 
-    {{score_button(game, game.red_o.get(), offensive_shots, "btn-danger btn-red btn-red-o")}}
+    {{score_button(game, game.red_o.get(), offensive_shots, "btn-red-o")}}
 
-</div>
+    {{score_button(game, game.blue_o.get(), offensive_shots, "blue btn-blue-o")}}
 
-<br><br><br><br>
-
-<div class="row">
-
-    {{score_button(game, game.blue_o.get(), offensive_shots, "btn-primary btn-blue btn-blue-o")}}
-
-    {{score_button(game, game.red_d.get(), defensive_shots, "btn-danger btn-red btn-red-d")}}
+    {{score_button(game, game.red_d.get(), defensive_shots, "btn-red-d")}}
 
 </div>
 

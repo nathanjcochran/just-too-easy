@@ -1,0 +1,12 @@
+.player-button {
+  background: #eb5032;
+  width: 48%;
+  border-radius: 2px;
+  color: #fff;
+  font-size: 32px;
+  text-align: center;
+  padding: 0.5em 1em;
+}
+.player-button.blue {
+  background: #1680e2;
+}

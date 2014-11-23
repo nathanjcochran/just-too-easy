@@ -3,6 +3,7 @@
 {% block scripts %}
 <script type="text/javascript" src="/scripts/fastclick.js"></script>
 <script type="text/javascript" src="/scripts/play-game.js"></script>
+<link rel="stylesheet" href="/scripts/play-game.css">
 {% endblock %}
 
 {# ---- Score Button Macro ---- #}
@@ -12,7 +13,12 @@
 <div class="col-xs-6">
     <button type="button" class="btn {{btn_class}} btn-block score-btn" 
         data-game="{{game.key.urlsafe()}}"
-        data-player="{{player.key.urlsafe()}}">{{player.name}}</button>
+        data-player="{{player.key.urlsafe()}}">
+        <div class="thumbnail player-image">
+            <img src="/players/image?key={{player.image.urlsafe()}}">
+        </div>
+        {{player.name}}
+    </button>
 </div>
 
 {% endmacro %}

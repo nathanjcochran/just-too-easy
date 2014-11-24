@@ -26,7 +26,7 @@
 {# Body: #}
 {% block body %}
 
-<br><br>
+<br>
 
 <div class="message alert" role="alert"></div>
 
@@ -46,7 +46,7 @@
 
 {# Score buttons: #}
 {% if not game.isComplete() %}
-<br><br><br><br>
+<br><br>
 
 <div class="row">
 
@@ -56,7 +56,7 @@
 
 </div>
 
-<br><br><br><br>
+<br>
 
 <div class="row">
 
@@ -67,5 +67,7 @@
 </div>
 
 {% endif %}
+
+<br><br>
 
 {% endblock body %}

@@ -76,13 +76,13 @@ $(document).ready(function() {
         var red_o = $(".btn-red-o");
         var red_d = $(".btn-red-d");
 
-        var tempName = red_o.text();
+        var tempName = red_o.html();
         var tempPlayer = red_o.data("player");
 
-        red_o.text(red_d.text());
+        red_o.html(red_d.html());
         red_o.data("player", red_d.data("player"));
 
-        red_d.text(tempName);
+        red_d.html(tempName);
         red_d.data("player", tempPlayer);
 
         showWarning("Red half-time!");
@@ -92,13 +92,13 @@ $(document).ready(function() {
         var blue_o = $(".btn-blue-o");
         var blue_d = $(".btn-blue-d");
 
-        var tempName = blue_o.text();
+        var tempName = blue_o.html();
         var tempPlayer = blue_o.data("player");
 
-        blue_o.text(blue_d.text());
+        blue_o.html(blue_d.html());
         blue_o.data("player", blue_d.data("player"));
 
-        blue_d.text(tempName);
+        blue_d.html(tempName);
         blue_d.data("player", tempPlayer);
 
         showWarning("Blue half-time!");

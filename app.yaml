@@ -14,6 +14,9 @@ handlers:
 - url: /game.*
   script: controllers.game.app
 
+- url: /api.*
+  script: controllers.api.app
+
 libraries:
 - name: webapp2
   version: "2.5.2"

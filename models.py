@@ -26,6 +26,7 @@ class Player(ndb.Model):
     total_games = ndb.IntegerProperty(required=True, default=0)
     total_wins = ndb.IntegerProperty(required=True, default=0)
     image = ndb.KeyProperty(kind='Image')
+    deleted = ndb.BooleanProperty(required=True, default=False)
 
     def win_percentage(self):
         if self.total_games > 0:

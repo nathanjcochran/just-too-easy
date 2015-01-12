@@ -21,8 +21,8 @@ class ViewImage(webapp2.RequestHandler):
 class Players(webapp2.RequestHandler):
     def get(self):
 
-        # Fetch all players:
-        player_query = Player.query().order(-Player.elo)
+        # Fetch all non-deleted players:
+        player_query = Player.query(Player.deleted == False).order(-Player.elo)
         players = player_query.fetch()
 
         # Spit them out in a template:
@@ -47,7 +47,9 @@ class RemovePlayer(webapp2.RequestHandler):
     def post(self):
         url_key = self.request.get('key')
         player_key = ndb.Key(urlsafe = url_key)
-        player_key.delete()
+        player = player_key.get()
+        player.deleted = True
+        player.put()
 
         self.redirect('/players')
 
@@ -76,11 +78,25 @@ class RecalculateStats(webapp2.RequestHandler):
 
         self.response.write("Success")
 
+class Fix(webapp2.RequestHandler):
+
+    def get(self):
+        player_query = Player.query()
+        players = player_query.fetch()
+
+        for player in players:
+            player.deleted = False
+            player.put()
+
+        self.response.write("Success")
+
+
 app = webapp2.WSGIApplication([
     ('/players', Players),
     ('/players/add', AddPlayer),
     ('/players/remove', RemovePlayer),
     ('/players/image', ViewImage),
     ('/players/recalc', RecalculateStats),
+    ('/players/fix', Fix)
 ], debug=True)
 

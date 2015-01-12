@@ -21,7 +21,7 @@ class NewGame(webapp2.RequestHandler):
     User selects 4 players to start game:
     """
     def get(self):
-        players = Player.query()
+        players = Player.query(Player.deleted == False)
         template = jinja.get_template('new_game.html')
         self.response.write(template.render({'players':players}))
 
@@ -33,7 +33,7 @@ class NewGame(webapp2.RequestHandler):
 
         # Incorrect number of players:
         if len(url_keys) != 4:
-            players = Player.query()
+            players = Player.query(Player.deleted == False)
             model = {
                 'players':players,
                 'error':'Please select exactly 4 players'

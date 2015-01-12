@@ -19,10 +19,8 @@
             <th class="col-xs-3">
                 Win %
             </th>
-            <!--
             <th class="col-xs-1">
             </th>
-            -->
         </tr>
     </thead>
     <tbody>
@@ -41,14 +39,12 @@
             <td class="col-xs-3">
                 <h4>{{player.win_percentage()}} %</h4>
             </td>
-            <!--
             <td class="col-xs-1">
                 <form action="/players/remove" method="post">
                     <input type="hidden" name="key" value="{{player.key.urlsafe()}}"/>
                     <input type="submit" value="Delete" class="btn btn-default"/>
                 </form>
             </td>
-            -->
         </tr>
 
         {% endfor %}

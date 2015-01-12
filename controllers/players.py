@@ -78,25 +78,11 @@ class RecalculateStats(webapp2.RequestHandler):
 
         self.response.write("Success")
 
-class Fix(webapp2.RequestHandler):
-
-    def get(self):
-        player_query = Player.query()
-        players = player_query.fetch()
-
-        for player in players:
-            player.deleted = False
-            player.put()
-
-        self.response.write("Success")
-
-
 app = webapp2.WSGIApplication([
     ('/players', Players),
     ('/players/add', AddPlayer),
     ('/players/remove', RemovePlayer),
     ('/players/image', ViewImage),
-    ('/players/recalc', RecalculateStats),
-    ('/players/fix', Fix)
+    ('/players/recalc', RecalculateStats)
 ], debug=True)
 

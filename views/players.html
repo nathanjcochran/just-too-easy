@@ -17,13 +17,13 @@
                 Elo Rating
             </th>
             <th class="col-xs-2">
+                Win %
+            </th>
+            <th class="col-xs-2">
                 Games Played
             </th>
             <th class="col-xs-2">
                 Wins
-            </th>
-            <th class="col-xs-2">
-                Win %
             </th>
             <th class="col-xs-1">
             </th>
@@ -37,19 +37,19 @@
                 <img src="/players/image?key={{player.image.urlsafe()}}" class="img-rounded col-xs-12"/>
             </td>
             <td class="col-xs-2">
-                <h3>{{player.name}}</h3>
+                <h4>{{player.name}}</h4>
             </td>
             <td class="col-xs-2">
-                <h3>{{player.elo}}</h3>
+                <h4>{{player.elo}}</h4>
             </td>
             <td class="col-xs-2">
-                <h3>{{player.total_games}}</h3>
+                <h4>{{player.win_percentage()}} %</h4>
             </td>
             <td class="col-xs-2">
-                <h3>{{player.total_wins}}</h3>
+                <h4>{{player.total_games}}</h4>
             </td>
             <td class="col-xs-2">
-                <h3>{{player.win_percentage()}}</h3>
+                <h4>{{player.total_wins}}</h4>
             </td>
             <td class="col-xs-1">
                 <form action="/players/remove" method="post">

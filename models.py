@@ -29,7 +29,7 @@ class Player(ndb.Model):
 
     def win_percentage(self):
         if self.total_games > 0:
-            return int(float(self.total_wins) / self.total_games * 100)
+            return round(float(self.total_wins) / self.total_games * 100, 2)
         else:
             return None
 

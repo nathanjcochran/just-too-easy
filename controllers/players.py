@@ -22,7 +22,7 @@ class Players(webapp2.RequestHandler):
     def get(self):
 
         # Fetch all players:
-        player_query = Player.query()
+        player_query = Player.query().order(-Player.elo)
         players = player_query.fetch()
 
         # Spit them out in a template:

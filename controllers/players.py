@@ -71,6 +71,8 @@ class RecalculateStats(webapp2.RequestHandler):
         games = game_query.fetch()
 
         for game in games:
+            if not game.is_complete():
+                continue
             game.adjust_player_ratings(player_dict[game.red_o], player_dict[game.red_d], player_dict[game.blue_o], player_dict[game.blue_d])
 
         for key in player_dict:

@@ -76,12 +76,11 @@ class RecalculateStats(webapp2.RequestHandler):
 
         self.response.write("Success")
 
-
 app = webapp2.WSGIApplication([
     ('/players', Players),
     ('/players/add', AddPlayer),
     ('/players/remove', RemovePlayer),
     ('/players/image', ViewImage),
-    ('/players/recalc', RecalculateStats)
+    ('/players/recalc', RecalculateStats),
 ], debug=True)
 

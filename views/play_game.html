@@ -17,7 +17,7 @@
         <div class="thumbnail player-image">
             <img src="/players/image?key={{player.image.urlsafe()}}">
         </div>
-        {{player.name}}
+        {{player.name}} ({{player.elo}})
     </button>
 </div>
 
@@ -45,7 +45,7 @@
 </div>
 
 {# Score buttons: #}
-{% if not game.isComplete() %}
+{% if not game.is_complete() %}
 <br><br>
 
 <div class="row">

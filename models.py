@@ -1,6 +1,7 @@
 from protorpc import messages
 from google.appengine.ext import ndb
 from google.appengine.ext.ndb import msgprop
+from elo import *
 
 class GameStatus(messages.Enum):
     active = 1
@@ -21,7 +22,16 @@ class Image(ndb.Model):
 
 class Player(ndb.Model):
     name = ndb.StringProperty(required=True)
+    elo = ndb.IntegerProperty(required=True, default=1600)
+    total_games = ndb.IntegerProperty(required=True, default=0)
+    total_wins = ndb.IntegerProperty(required=True, default=0)
     image = ndb.KeyProperty(kind='Image')
+
+    def win_percentage(self):
+        if self.total_games > 0:
+            return int(float(self.total_wins) / self.total_games * 100)
+        else:
+            return None
 
 class Game(ndb.Model):
     length = ndb.IntegerProperty(default=6)
@@ -88,24 +98,80 @@ class Game(ndb.Model):
             if len(self.blue_shots) >= self.length:
                 self.status = GameStatus.complete
 
+        # Adjust player's elo ratings if over:
+        if self.is_complete():
+            red_o = self.red_o.get()
+            red_d = self.red_d.get()
+            blue_o = self.blue_o.get()
+            blue_d = self.blue_d.get()
+
+            self.adjust_player_ratings(red_o, red_d, blue_o, blue_d)
+
+            red_o.put()
+            red_d.put()
+            blue_o.put()
+            blue_d.put()
+
         self.put()
+
+    def adjust_player_ratings(self, red_o, red_d, blue_o, blue_d):
+        winning_side = self.winning_side()
+        if winning_side == None:
+            return
+
+        red_o.total_games += 1
+        red_d.total_games += 1
+        blue_o.total_games += 1
+        blue_d.total_games += 1
+
+        red_avg = (red_o.elo + red_d.elo) / 2
+        blue_avg = (blue_o.elo + blue_d.elo) / 2
+        calc = EloCalculator()
+
+        if winning_side == Side.red:
+            red_o.total_wins += 1
+            red_d.total_wins += 1
+
+            calc.calculate(red_avg, blue_avg)
+            red_o.elo = calc.get_new_winner_rating(red_o.elo)
+            red_d.elo = calc.get_new_winner_rating(red_d.elo)
+            blue_o.elo = calc.get_new_loser_rating(blue_o.elo)
+            blue_d.elo = calc.get_new_loser_rating(blue_d.elo)
+
+        elif winning_side == Side.blue:
+            blue_o.total_wins += 1
+            blue_d.total_wins += 1
+
+            calc.calculate(blue_avg, red_avg)
+            blue_o.elo = calc.get_new_winner_rating(blue_o.elo)
+            blue_d.elo = calc.get_new_winner_rating(blue_d.elo)
+            red_o.elo = calc.get_new_loser_rating(red_o.elo)
+            red_d.elo = calc.get_new_loser_rating(red_d.elo)
 
     def side_and_position(self, player_key):
         """
         Get the side and position of the specified player
 
         """
-        if(player_key == self.red_o):
+        if player_key == self.red_o:
             return Side.red, Position.offense
-        if(player_key == self.red_d):
+        if player_key == self.red_d:
             return Side.red, Position.defense
-        if(player_key == self.blue_o):
+        if player_key == self.blue_o:
             return Side.blue, Position.offense
-        if(player_key == self.blue_d):
+        if player_key == self.blue_d:
             return Side.blue, Position.defense
 
-    def isComplete(self):
+    def is_complete(self):
         return self.status == GameStatus.complete
+
+    def winning_side(self):
+        if not self.is_complete():
+            return None
+        elif len(self.red_shots) == self.length:
+            return Side.red
+        else:
+            return Side.blue
 
     def red_score(self):
         return len(self.red_shots)

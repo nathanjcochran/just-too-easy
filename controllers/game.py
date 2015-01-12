@@ -68,7 +68,7 @@ class NewGame(webapp2.RequestHandler):
 
 class PlayGame(webapp2.RequestHandler):
     """
-    Play a game.  Shows score and reveals scoring buttons.
+    Play a game. Shows score and reveals scoring buttons.
     """
     def get(self):
         url_key = self.request.get('key')

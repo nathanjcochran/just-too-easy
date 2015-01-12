@@ -2,24 +2,27 @@ import math
 
 K_FACTOR  = 32.0
 
-def elo_score(rating1, rating2, score1, score2):
-    r1 = transform_rating(rating1)
-    r2 = transform_rating(rating2)
+class EloCalculator():
 
-    e1, e2 = expected_scores(r1, r2)
+    def calculate(self, avg_winner_rating, avg_loser_rating):
+        winner_r = self.transform_rating(avg_winner_rating)
+        loser_r = self.transform_rating(avg_loser_rating)
 
-    new_r1 = updated_rating(rating1, e1, score1)
-    new_r2 = updated_rating(rating2, e2, score2)
+        self.winner_expected, self.loser_expected = self.expected_scores(winner_r, loser_r)
 
-    return new_r1, new_r2
+    def get_new_winner_rating(self, old_rating):
+        return self.updated_rating(old_rating, self.winner_expected, 1)
 
-def transform_rating(rating):
-    return math.pow(10, (rating/400.0))
+    def get_new_loser_rating(self, old_rating):
+        return self.updated_rating(old_rating, self.loser_expected, 0)
 
-def expected_scores(r1, r2):
-    e1 = r1 / (r1 + r2)
-    e2 = r2 / (r1 + r2)
-    return e1, e2
+    def transform_rating(self, rating):
+        return math.pow(10, (rating/400.0))
 
-def updated_rating(r, e, s):
-    return int(round(r + K_FACTOR * (s - e)))
+    def expected_scores(self, r1, r2):
+        e1 = r1 / (r1 + r2)
+        e2 = r2 / (r1 + r2)
+        return e1, e2
+
+    def updated_rating(self, r, e, s):
+        return int(round(r + K_FACTOR * (s - e)))

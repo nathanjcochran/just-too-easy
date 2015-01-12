@@ -8,7 +8,7 @@
 <table class="table table-responsive table-striped">
     <thead>
         <tr>
-            <th class="col-xs-1">
+            <th class="col-xs-2">
             </th>
             <th class="col-xs-2">
                 Name
@@ -25,15 +25,17 @@
             <th class="col-xs-2">
                 Wins
             </th>
+            <!--
             <th class="col-xs-1">
             </th>
+            -->
         </tr>
     </thead>
     <tbody>
         {% for player in players %}
 
         <tr>
-            <td class="col-xs-1">
+            <td class="col-xs-2">
                 <img src="/players/image?key={{player.image.urlsafe()}}" class="img-rounded col-xs-12"/>
             </td>
             <td class="col-xs-2">
@@ -51,12 +53,14 @@
             <td class="col-xs-2">
                 <h4>{{player.total_wins}}</h4>
             </td>
+            <!--
             <td class="col-xs-1">
                 <form action="/players/remove" method="post">
                     <input type="hidden" name="key" value="{{player.key.urlsafe()}}"/>
                     <input type="submit" value="Delete" class="btn btn-default"/>
                 </form>
             </td>
+            -->
         </tr>
 
         {% endfor %}

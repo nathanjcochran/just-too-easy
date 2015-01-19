@@ -2,7 +2,7 @@ from protorpc import messages
 from google.appengine.ext import ndb
 from google.appengine.ext.ndb import msgprop
 from random import shuffle
-from elo import *
+import elo
 
 class GameStatus(messages.Enum):
     active = 1
@@ -151,13 +151,11 @@ class Game(ndb.Model):
         blue_o.total_games += 1
         blue_d.total_games += 1
 
-        calc = EloCalculator()
-
         if winning_side == Side.red:
             red_o.total_wins += 1
             red_d.total_wins += 1
 
-            winner_points, loser_points = calc.calculate(self.red_elo, self.blue_elo)
+            winner_points, loser_points = elo.calculate(self.red_elo, self.blue_elo)
             red_o.elo = red_o.elo + winner_points
             red_d.elo = red_d.elo + winner_points
             blue_o.elo = blue_o.elo + loser_points
@@ -167,7 +165,7 @@ class Game(ndb.Model):
             blue_o.total_wins += 1
             blue_d.total_wins += 1
 
-            winner_points, loser_points = calc.calculate(self.blue_elo, self.red_elo)
+            winner_points, loser_points = elo.calculate(self.blue_elo, self.red_elo)
             blue_o.elo = blue_o.elo + winner_points
             blue_d.elo = blue_d.elo + winner_points
             red_o.elo = red_o.elo + loser_points
@@ -206,6 +204,12 @@ class Game(ndb.Model):
 
     def blue_score(self):
         return len(self.blue_shots)
+
+    def red_elo_points_to_gain(self):
+        return elo.calculate(self.red_elo, self.blue_elo)[0]
+
+    def blue_elo_points_to_gain(self):
+        return elo.calculate(self.blue_elo, self.red_elo)[0]
 
 class Shot(ndb.Model): # ancestor = Game => strongly consistent results
     player = ndb.KeyProperty(kind='Player', required=True)

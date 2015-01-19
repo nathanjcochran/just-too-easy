@@ -49,19 +49,9 @@ class NewGame(webapp2.RequestHandler):
             player_key = ndb.Key(urlsafe = url_key)
             player_keys.append(player_key)
 
-        # Randomize
-        shuffle(player_keys)
-
         # Create game:
         game = Game()
-        game.length = GAME_LENGTH
-        game.status = GameStatus.active
-        game.red_o = player_keys[0]
-        game.red_d = player_keys[1]
-        game.blue_o = player_keys[2]
-        game.blue_d = player_keys[3]
-
-        # Persist it:
+        game.initialize(player_keys, GAME_LENGTH)
         game.put()
 
         self.redirect('/game/play?key=' + game.key.urlsafe())
@@ -133,6 +123,8 @@ class PlayGame(webapp2.RequestHandler):
             response = {
                 'success' : True,
                 'game_over' : game.status != GameStatus.active,
+                'red_elo' : game.red_elo,
+                'blue_elo' : game.blue_elo,
                 'red_score' : len(game.red_shots),
                 'blue_score' : len(game.blue_shots),
             }

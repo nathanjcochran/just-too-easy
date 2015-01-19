@@ -1,6 +1,7 @@
 from protorpc import messages
 from google.appengine.ext import ndb
 from google.appengine.ext.ndb import msgprop
+from random import shuffle
 from elo import *
 
 class GameStatus(messages.Enum):
@@ -49,6 +50,29 @@ class Game(ndb.Model):
     red_shots = ndb.KeyProperty(kind='Shot', repeated=True)
     blue_shots = ndb.KeyProperty(kind='Shot', repeated=True)
 
+    # Team Elo Ratings (at start of match):
+    red_elo = ndb.IntegerProperty(required=True)
+    blue_elo = ndb.IntegerProperty(required=True)
+
+    def initialize(self, players, length):
+        ndb.Model.__init__(self)
+        self.length = length
+        self.status = GameStatus.active
+
+        shuffle(players)
+        self.red_o = players[0]
+        self.red_d = players[1]
+        self.blue_o = players[2]
+        self.blue_d = players[3]
+
+        red_o = self.red_o.get()
+        red_d = self.red_d.get()
+        blue_o = self.blue_o.get()
+        blue_d = self.blue_d.get()
+
+        self.red_elo = (red_o.elo + red_d.elo) / 2
+        self.blue_elo = (blue_o.elo + blue_d.elo) / 2
+
     def register_shot(self, player_key):
         """
         Register a shot for the player with the specified key
@@ -57,7 +81,7 @@ class Game(ndb.Model):
         is over
         """
 
-        # Get the actor who made the shot:
+        # Get the side and position of the player who made the shot:
         side, position = self.side_and_position(player_key)
 
         if not side or not position:
@@ -75,6 +99,7 @@ class Game(ndb.Model):
             shot.put()
             self.red_shots.append(shot.key)
 
+            # Red half time:
             if len(self.red_shots) == self.length/2:
                 temp = self.red_o
                 self.red_o = self.red_d
@@ -90,6 +115,7 @@ class Game(ndb.Model):
             shot.put()
             self.blue_shots.append(shot.key)
 
+            # Blue half time:
             if len(self.blue_shots) == self.length/2:
                 temp = self.blue_o
                 self.blue_o = self.blue_d
@@ -125,29 +151,30 @@ class Game(ndb.Model):
         blue_o.total_games += 1
         blue_d.total_games += 1
 
-        red_avg = (red_o.elo + red_d.elo) / 2
-        blue_avg = (blue_o.elo + blue_d.elo) / 2
         calc = EloCalculator()
 
         if winning_side == Side.red:
             red_o.total_wins += 1
             red_d.total_wins += 1
 
-            calc.calculate(red_avg, blue_avg)
-            red_o.elo = calc.get_new_winner_rating(red_o.elo)
-            red_d.elo = calc.get_new_winner_rating(red_d.elo)
-            blue_o.elo = calc.get_new_loser_rating(blue_o.elo)
-            blue_d.elo = calc.get_new_loser_rating(blue_d.elo)
+            winner_points, loser_points = calc.calculate(self.red_elo, self.blue_elo)
+            red_o.elo = red_o.elo + winner_points
+            red_d.elo = red_d.elo + winner_points
+            blue_o.elo = blue_o.elo + loser_points
+            blue_d.elo = blue_d.elo + loser_points
 
         elif winning_side == Side.blue:
             blue_o.total_wins += 1
             blue_d.total_wins += 1
 
-            calc.calculate(blue_avg, red_avg)
-            blue_o.elo = calc.get_new_winner_rating(blue_o.elo)
-            blue_d.elo = calc.get_new_winner_rating(blue_d.elo)
-            red_o.elo = calc.get_new_loser_rating(red_o.elo)
-            red_d.elo = calc.get_new_loser_rating(red_d.elo)
+            winner_points, loser_points = calc.calculate(self.blue_elo, self.red_elo)
+            blue_o.elo = blue_o.elo + winner_points
+            blue_d.elo = blue_d.elo + winner_points
+            red_o.elo = red_o.elo + loser_points
+            red_d.elo = red_d.elo + loser_points
+
+        else:
+            raise Exception("Error: invalid winning side")
 
     def side_and_position(self, player_key):
         """

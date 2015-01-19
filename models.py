@@ -151,6 +151,9 @@ class Game(ndb.Model):
         blue_o.total_games += 1
         blue_d.total_games += 1
 
+        self.red_elo = (red_o.elo + red_d.elo) / 2
+        self.blue_elo = (blue_o.elo + blue_d.elo) / 2
+
         if winning_side == Side.red:
             red_o.total_wins += 1
             red_d.total_wins += 1

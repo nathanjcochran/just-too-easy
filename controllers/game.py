@@ -56,6 +56,23 @@ class NewGame(webapp2.RequestHandler):
 
         self.redirect('/game/play?key=' + game.key.urlsafe())
 
+class AutomaticRematch(webapp2.RequestHandler):
+    """
+    Start a new game that is an automatic rematch of a previous game
+    """
+    def post(self):
+        url_key = self.request.get('game')
+        game_key = ndb.Key(urlsafe = url_key)
+        game = game_key.get()
+
+        winning_side = game.winning_side()
+
+        new_game = Game()
+        new_game.initialize(game.red_o, game.red_d, game.blue_o, game.blue_d, game.length)
+        new_game.put()
+
+        self.redirect('/game/play?key=' + new_game.key.urlsafe())
+
 class PlayGame(webapp2.RequestHandler):
     """
     Play a game. Shows score and reveals scoring buttons.
@@ -135,5 +152,6 @@ class PlayGame(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
     ('/game/new', NewGame),
+    ('/game/rematch', AutomaticRematch),
     ('/game/play', PlayGame)
     ], debug=True)

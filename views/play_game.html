@@ -30,41 +30,6 @@
 
 <div class="message alert" role="alert"></div>
 
-{# Elo Points: #}
-<div class="row">
-    <div class="col-xs-2">
-        <h3 class="text-center text-primary">
-            <span class="glyphicon glyphicon-arrow-up"></span>{{game.blue_elo_points_to_gain()}}
-        </h3>
-    </div>
-    <div class="col-xs-2">
-        <h3 class="text-center text-primary">
-            Elo: {{game.blue_elo}}
-        </h3>
-    </div>
-    <div class="col-xs-2">
-        <h3 class="text-center text-primary">
-            <span class="glyphicon glyphicon-arrow-down"></span>{{game.red_elo_points_to_gain()}}
-        </h3>
-    </div>
-
-    <div class="col-xs-2">
-        <h3 class="text-center text-danger">
-            <span class="glyphicon glyphicon-arrow-up"></span>{{game.red_elo_points_to_gain()}}
-        </h3>
-    </div>
-    <div class="col-xs-2">
-        <h3 class="text-center text-danger">
-            Elo: {{game.red_elo}}
-        </h3>
-    </div>
-    <div class="col-xs-2">
-        <h3 class="text-center text-danger">
-            <span class="glyphicon glyphicon-arrow-down"></span>{{game.blue_elo_points_to_gain()}}
-        </h3>
-    </div>
-</div>
-
 {# Scores: #}
 <div class="row">
     <div class="col-xs-6">
@@ -79,10 +44,44 @@
     </div>
 </div>
 
+{# Elo Points: #}
+<div class="row">
+    <div class="col-xs-1 col-xs-offset-1">
+        <h3 class="text-center text-primary">
+            <span class="glyphicon glyphicon-arrow-up"></span>{{game.blue_elo_points_to_gain()}}
+        </h3>
+    </div>
+    <div class="col-xs-2">
+        <h3 class="text-center text-primary">
+            {{game.blue_elo}}
+        </h3>
+    </div>
+    <div class="col-xs-1">
+        <h3 class="text-center text-primary">
+            <span class="glyphicon glyphicon-arrow-down"></span>{{game.red_elo_points_to_gain()}}
+        </h3>
+    </div>
+
+    <div class="col-xs-1 col-xs-offset-2">
+        <h3 class="text-center text-danger">
+            <span class="glyphicon glyphicon-arrow-up"></span>{{game.red_elo_points_to_gain()}}
+        </h3>
+    </div>
+    <div class="col-xs-2">
+        <h3 class="text-center text-danger">
+            {{game.red_elo}}
+        </h3>
+    </div>
+    <div class="col-xs-1">
+        <h3 class="text-center text-danger">
+            <span class="glyphicon glyphicon-arrow-down"></span>{{game.blue_elo_points_to_gain()}}
+        </h3>
+    </div>
+</div>
+
+
 {# Score buttons: #}
 {% if not game.is_complete() %}
-<br><br>
-
 <div class="row">
 
     {{score_button(game, game.blue_d.get(), defensive_shots, "btn-primary btn-blue btn-blue-d")}}

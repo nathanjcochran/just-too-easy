@@ -54,11 +54,10 @@ class Game(ndb.Model):
     red_elo = ndb.IntegerProperty(required=True)
     blue_elo = ndb.IntegerProperty(required=True)
 
-    def initialize(self, red_o, red_d, blue_o, blue_d, length):
+    def initialize(self, length, red_o, red_d, blue_o, blue_d):
         self.length = length
         self.status = GameStatus.active
 
-        shuffle(players)
         self.red_o = red_o
         self.red_d = red_d
         self.blue_o = blue_o
@@ -72,7 +71,7 @@ class Game(ndb.Model):
         self.red_elo = (red_o.elo + red_d.elo) / 2
         self.blue_elo = (blue_o.elo + blue_d.elo) / 2
 
-    def initialize(self, players, length):
+    def initialize_random(self, length, players):
         self.length = length
         self.status = GameStatus.active
 

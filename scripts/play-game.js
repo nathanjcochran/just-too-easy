@@ -106,6 +106,7 @@ $(document).ready(function() {
 
     function gameOver(message) {
         $(".score-btn").hide();
+        $(".automatic-rematch").show();
         showSuccess(message);
     };
 
@@ -114,6 +115,7 @@ $(document).ready(function() {
     });
 
     resetMessage();
+    $(".automatic-rematch").hide();
 
     $(".score-btn").click(function(){
         resetMessage();

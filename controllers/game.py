@@ -51,7 +51,7 @@ class NewGame(webapp2.RequestHandler):
 
         # Create game:
         game = Game()
-        game.initialize(player_keys, GAME_LENGTH)
+        game.initialize_random(GAME_LENGTH, player_keys)
         game.put()
 
         self.redirect('/game/play?key=' + game.key.urlsafe())
@@ -68,7 +68,7 @@ class AutomaticRematch(webapp2.RequestHandler):
         winning_side = game.winning_side()
 
         new_game = Game()
-        new_game.initialize(game.red_o, game.red_d, game.blue_o, game.blue_d, game.length)
+        new_game.initialize(game.length, game.red_o, game.red_d, game.blue_o, game.blue_d)
         new_game.put()
 
         self.redirect('/game/play?key=' + new_game.key.urlsafe())

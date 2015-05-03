@@ -16,6 +16,7 @@ class ViewImage(webapp2.RequestHandler):
         image = image_key.get()
 
         self.response.headers['Content-Type'] = 'image/jpeg'
+        self.response.headers['Cache-Control'] = 'public, max-age=3600'
         self.response.out.write(image.data)
 
 class Players(webapp2.RequestHandler):

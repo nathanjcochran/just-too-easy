@@ -11,13 +11,13 @@
 
 {# Score Button #}
 <div class="col-xs-6">
-    <button type="button" class="btn {{btn_class}} btn-block score-btn" 
+    <button type="button" class="btn {{btn_class}} btn-block score-btn"
         data-game="{{game.key.urlsafe()}}"
         data-player="{{player.key.urlsafe()}}">
         <div class="thumbnail player-image">
             <img src="/players/image?key={{player.image.urlsafe()}}">
         </div>
-        {{player.name}} ({{player.elo}})
+        {{player.name}} ({{player.elo}}) [{{player.trueskill_rating()}}]
     </button>
 </div>
 
@@ -42,7 +42,7 @@
     </div>
 </div>
 
-{# Elo Points: #}
+<!-- {# Elo Points: #}
 <div class="row">
     <div class="col-xs-2">
         <h4 class="text-right text-primary">
@@ -75,7 +75,7 @@
             <span class="glyphicon glyphicon-arrow-down"></span>{{game.blue_elo_points_to_gain()}}
         </h4>
     </div>
-</div>
+</div> -->
 
 
 {# Score buttons: #}

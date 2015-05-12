@@ -33,7 +33,7 @@ class NewGame(webapp2.RequestHandler):
 
         # Incorrect number of players:
         if len(url_keys) != 4:
-            players = Player.query(Player.deleted == False)
+            players = Player.query(Player.deleted == False).order(Player.name)
             model = {
                 'players':players,
                 'error':'Please select exactly 4 players'

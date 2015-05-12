@@ -21,13 +21,13 @@ class NewGame(webapp2.RequestHandler):
     User selects 4 players to start game:
     """
     def get(self):
-        players = Player.query(Player.deleted == False)
+        players = Player.query(Player.deleted == False).order(Player.name)
         template = jinja.get_template('new_game.html')
         self.response.write(template.render({'players':players}))
 
     """
     Randomly assign players' positions, create game:
-    """ 
+    """
     def post(self):
         url_keys = self.request.get_all('players')
 
@@ -107,7 +107,7 @@ class PlayGame(webapp2.RequestHandler):
             game_url_key = self.request.get('game_key')
             if not game_url_key:
                 raise Exception('Error: no game key')
-            
+
             game_key = ndb.Key(urlsafe = game_url_key)
             if not game_key:
                 raise Exception('Error: invalid game key')

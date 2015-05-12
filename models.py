@@ -3,6 +3,7 @@ from google.appengine.ext import ndb
 from google.appengine.ext.ndb import msgprop
 from random import shuffle
 import elo
+import skill
 
 class GameStatus(messages.Enum):
     active = 1
@@ -29,11 +30,18 @@ class Player(ndb.Model):
     image = ndb.KeyProperty(kind='Image')
     deleted = ndb.BooleanProperty(required=True, default=False)
 
+    # TrueSkill
+    mu = ndb.FloatProperty(required=True, default=skill.DEFAULT_MU)
+    sigma = ndb.FloatProperty(required=True, default=skill.DEFAULT_SIGMA)
+
     def win_percentage(self):
         if self.total_games > 0:
             return round(float(self.total_wins) / self.total_games * 100, 2)
         else:
             return None
+
+    def trueskill_rating(self):
+        return skill.get_rating(self)
 
 class Game(ndb.Model):
     length = ndb.IntegerProperty(default=6)
@@ -92,7 +100,7 @@ class Game(ndb.Model):
     def register_shot(self, player_key):
         """
         Register a shot for the player with the specified key
-        
+
         Raises an Exception if the key is invalid or the game
         is over
         """
@@ -141,7 +149,7 @@ class Game(ndb.Model):
             if len(self.blue_shots) >= self.length:
                 self.status = GameStatus.complete
 
-        # Adjust player's elo ratings if over:
+        # Adjust player's ratings if over:
         if self.is_complete():
             red_o = self.red_o.get()
             red_d = self.red_d.get()
@@ -174,24 +182,39 @@ class Game(ndb.Model):
             red_o.total_wins += 1
             red_d.total_wins += 1
 
-            winner_points, loser_points = elo.calculate(self.red_elo, self.blue_elo)
-            red_o.elo = red_o.elo + winner_points
-            red_d.elo = red_d.elo + winner_points
-            blue_o.elo = blue_o.elo + loser_points
-            blue_d.elo = blue_d.elo + loser_points
+            self.update_elo(red_o, red_d, self.red_elo, blue_o, blue_d, self.blue_elo)
+            self.update_trueskill((red_o, red_d), (blue_o, blue_d))
 
         elif winning_side == Side.blue:
             blue_o.total_wins += 1
             blue_d.total_wins += 1
 
-            winner_points, loser_points = elo.calculate(self.blue_elo, self.red_elo)
-            blue_o.elo = blue_o.elo + winner_points
-            blue_d.elo = blue_d.elo + winner_points
-            red_o.elo = red_o.elo + loser_points
-            red_d.elo = red_d.elo + loser_points
+            self.update_elo(blue_o, blue_d, self.blue_elo, red_o, red_d, self.red_elo)
+            self.update_trueskill((blue_o, blue_d), (red_o, red_d))
 
         else:
             raise Exception("Error: invalid winning side")
+
+    def update_elo(self, winner1, winner2, winner_elo, loser1, loser2, loser_elo):
+        winner_points, loser_points = elo.calculate(winner_elo, loser_elo)
+
+        winner1.elo = winner1.elo + winner_points
+        winner2.elo = winner2.elo + winner_points
+
+        loser1.elo = loser1.elo + loser_points
+        loser2.elo = loser2.elo + loser_points
+
+    def update_trueskill(self, winners, losers):
+        winner_updates, loser_updates = skill.update_ratings(winners, losers)
+
+        for i in range(len(winners)):
+            winners[i].mu = winner_updates[i].mu
+            winners[i].sigma = winner_updates[i].sigma
+
+        for i in range(len(losers)):
+            losers[i].mu = loser_updates[i].mu
+            losers[i].sigma = loser_updates[i].sigma
+
 
     def side_and_position(self, player_key):
         """

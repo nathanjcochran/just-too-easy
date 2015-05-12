@@ -26,3 +26,8 @@ indexes:
   - name: deleted
   - name: elo
     direction: desc
+
+- kind: Player
+  properties:
+  - name: deleted
+  - name: name

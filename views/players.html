@@ -17,6 +17,9 @@
                 Elo Rating
             </th>
             <th class="col-xs-3">
+                TrueSkill Rating
+            </th>
+            <th class="col-xs-3">
                 Win %
             </th>
             <th class="col-xs-1">
@@ -35,6 +38,9 @@
             </td>
             <td class="col-xs-3">
                 <h4>{{player.elo}}</h4>
+            </td>
+            <td class="col-xs-3">
+                <h4>{{player.trueskill_rating()}}</h4>
             </td>
             <td class="col-xs-3">
                 <h4>{{player.win_percentage()}} %</h4>

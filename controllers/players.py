@@ -1,6 +1,7 @@
 import webapp2
 import jinja2
 import json
+import skill
 from google.appengine.ext import ndb
 from models import *
 
@@ -23,7 +24,7 @@ class Players(webapp2.RequestHandler):
     def get(self):
 
         # Fetch all non-deleted players:
-        player_query = Player.query(Player.deleted == False).order(-Player.elo)
+        player_query = Player.query(Player.deleted == False).order(Player.name)
         players = player_query.fetch()
 
         # Spit them out in a template:
@@ -63,6 +64,8 @@ class RecalculateStats(webapp2.RequestHandler):
 
         for player in players:
             player.elo = 1600
+            player.mu = skill.DEFAULT_MU
+            player.sigma = skill.DEFAULT_SIGMA
             player.total_games = 0
             player.total_wins = 0
 

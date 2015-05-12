@@ -3,6 +3,7 @@ from google.appengine.ext import ndb
 from google.appengine.ext.ndb import msgprop
 from random import shuffle
 import elo
+import skill
 
 class GameStatus(messages.Enum):
     active = 1
@@ -28,6 +29,10 @@ class Player(ndb.Model):
     total_wins = ndb.IntegerProperty(required=True, default=0)
     image = ndb.KeyProperty(kind='Image')
     deleted = ndb.BooleanProperty(required=True, default=False)
+
+    # TrueSkill
+    mu = ndb.IntegerProperty(required=True, default=skill.DEFAULT_MU)
+    sigma = ndb.IntegerProperty(required=True, default=skill.DEFAULT_SIGMA)
 
     def win_percentage(self):
         if self.total_games > 0:
@@ -92,7 +97,7 @@ class Game(ndb.Model):
     def register_shot(self, player_key):
         """
         Register a shot for the player with the specified key
-        
+
         Raises an Exception if the key is invalid or the game
         is over
         """

@@ -31,14 +31,17 @@ class Player(ndb.Model):
     deleted = ndb.BooleanProperty(required=True, default=False)
 
     # TrueSkill
-    mu = ndb.IntegerProperty(required=True, default=skill.DEFAULT_MU)
-    sigma = ndb.IntegerProperty(required=True, default=skill.DEFAULT_SIGMA)
+    mu = ndb.FloatProperty(required=True, default=skill.DEFAULT_MU)
+    sigma = ndb.FloatProperty(required=True, default=skill.DEFAULT_SIGMA)
 
     def win_percentage(self):
         if self.total_games > 0:
             return round(float(self.total_wins) / self.total_games * 100, 2)
         else:
             return None
+
+    def trueskill_rating(self):
+        return skill.get_rating(self)
 
 class Game(ndb.Model):
     length = ndb.IntegerProperty(default=6)

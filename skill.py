@@ -15,6 +15,12 @@ _ENV = trueskill.TrueSkill(
     tau=DEFAULT_TAU,
     draw_probability=DEFAULT_DRAW)
 
+def calculate_quality(red, blue):
+    red_ratings = tuple(trueskill.Rating(p.mu, p.sigma) for p in red)
+    blue_ratings = tuple(trueskill.Rating(p.mu, p.sigma) for p in blue)
+
+    return int(_ENV.quality([red_ratings, blue_ratings]) * 100)
+
 def get_rating(player):
     rating = trueskill.Rating(mu=player.mu, sigma=player.sigma)
     return int(_ENV.expose(rating))

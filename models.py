@@ -62,6 +62,9 @@ class Game(ndb.Model):
     red_elo = ndb.IntegerProperty(required=True)
     blue_elo = ndb.IntegerProperty(required=True)
 
+    # TrueSkill
+    quality = ndb.IntegerProperty(required=True)
+
     def initialize(self, length, red_o, red_d, blue_o, blue_d):
         self.length = length
         self.status = GameStatus.active
@@ -78,6 +81,8 @@ class Game(ndb.Model):
 
         self.red_elo = (red_o.elo + red_d.elo) / 2
         self.blue_elo = (blue_o.elo + blue_d.elo) / 2
+
+        self.quality = skill.calculate_quality((red_o, red_d), (blue_o, blue_d))
 
     def initialize_random(self, length, players):
         self.length = length
@@ -96,6 +101,53 @@ class Game(ndb.Model):
 
         self.red_elo = (red_o.elo + red_d.elo) / 2
         self.blue_elo = (blue_o.elo + blue_d.elo) / 2
+
+        self.quality = skill.calculate_quality((red_o, red_d), (blue_o, blue_d))
+
+    def initialize_matched(self, length, players):
+        self.length = length
+        self.status = GameStatus.active
+
+        shuffle(players)
+        p1 = players[0].get()
+        p2 = players[1].get()
+        p3 = players[2].get()
+        p4 = players[3].get()
+
+        red = (p1, p2)
+        blue = (p3, p4)
+
+        teams = {'red': red, 'blue': blue}
+        quality = skill.calculate_quality(red, blue)
+
+        r = (p1, p3)
+        b = (p2, p4)
+        q = skill.calculate_quality(r, b)
+        if q > quality:
+            teams = {'red': r, 'blue': b}
+            quality = q
+
+        r = (p1, p4)
+        b = (p2, p3)
+        q = skill.calculate_quality(r, b)
+        if q > quality:
+            teams = {'red': r, 'blue': b}
+            quality = q
+
+        red_o = teams['red'][0]
+        red_d = teams['red'][1]
+        blue_o = teams['blue'][0]
+        blue_d = teams['blue'][1]
+
+        self.red_o = red_o.key
+        self.red_d = red_d.key
+        self.blue_o = blue_o.key
+        self.blue_d = blue_d.key
+
+        self.red_elo = (red_o.elo + red_d.elo) / 2
+        self.blue_elo = (blue_o.elo + blue_d.elo) / 2
+
+        self.quality = quality
 
     def register_shot(self, player_key):
         """

@@ -27,12 +27,21 @@
 
             <option class="col-xs-3"
                 data-img-src="/players/image?key={{player.image.urlsafe()}}"
-                data-img-label="{{player.name}} ({{player.elo}})"
+                data-img-label="{{player.name}} ({{player.elo}}) [{{player.trueskill_rating()}}]"
                 value="{{player.key.urlsafe()}}">
             </option>
 
             {% endfor %}
         </select>
+
+        <div>
+            <span>
+                <input type="radio" name="match_mode" value="random" checked>Random
+            </span>
+            <span>
+                <input type="radio" name="match_mode" value="matched">Matched
+            </span>
+        </div>
 
         <div class="form-group">
             <div class="col-xs-12">

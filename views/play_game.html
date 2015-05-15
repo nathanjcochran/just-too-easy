@@ -42,7 +42,14 @@
     </div>
 </div>
 
-<!-- {# Elo Points: #}
+{# TrueSkill Quality: #}
+<div class="row">
+    <h4 class="text-center">
+        <span>{{game.quality}}%</span>
+    </h4>
+</div>
+
+{# Elo Points: #}
 <div class="row">
     <div class="col-xs-2">
         <h4 class="text-right text-primary">
@@ -75,8 +82,7 @@
             <span class="glyphicon glyphicon-arrow-down"></span>{{game.blue_elo_points_to_gain()}}
         </h4>
     </div>
-</div> -->
-
+</div>
 
 {# Score buttons: #}
 {% if not game.is_complete() %}

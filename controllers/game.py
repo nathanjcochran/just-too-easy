@@ -50,8 +50,15 @@ class NewGame(webapp2.RequestHandler):
             player_keys.append(player_key)
 
         # Create game:
+        match_mode = self.request.get("match_mode")
+
         game = Game()
-        game.initialize_random(GAME_LENGTH, player_keys)
+        if match_mode == "random":
+            game.initialize_random(GAME_LENGTH, player_keys)
+
+        if match_mode == "matched":
+            game.initialize_matched(GAME_LENGTH, player_keys)
+
         game.put()
 
         self.redirect('/game/play?key=' + game.key.urlsafe())

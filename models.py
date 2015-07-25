@@ -43,6 +43,18 @@ class Player(ndb.Model):
     def trueskill_rating(self):
         return skill.get_rating(self)
 
+    def trueskill_gain(self, teammate, opponents):
+        ratings = skill.update_ratings((self, teammate), opponents)[0][0]
+        rating = skill.calculate_rating(ratings.mu, ratings.sigma)
+
+        return rating - self.trueskill_rating()
+
+    def trueskill_loss(self, teammate, opponents):
+        ratings = skill.update_ratings(opponents, (self, teammate))[1][0]
+        rating = skill.calculate_rating(ratings.mu, ratings.sigma)
+
+        return self.trueskill_rating() - rating
+
 class Game(ndb.Model):
     length = ndb.IntegerProperty(default=6)
     status = msgprop.EnumProperty(GameStatus, required=True)

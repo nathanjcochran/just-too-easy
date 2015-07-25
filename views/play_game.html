@@ -7,17 +7,52 @@
 {% endblock %}
 
 {# ---- Score Button Macro ---- #}
-{% macro score_button(game, player, shot_types, btn_class) %}
+{% macro score_button(
+    game,
+    player,
+    teammate,
+    opponents,
+    shot_types,
+    elo_gain,
+    elo_loss,
+    btn_class) %}
 
 {# Score Button #}
 <div class="col-xs-6">
     <button type="button" class="btn {{btn_class}} btn-block score-btn"
         data-game="{{game.key.urlsafe()}}"
         data-player="{{player.key.urlsafe()}}">
+
+        {{player.name}}
+
         <div class="thumbnail player-image">
             <img src="/players/image?key={{player.image.urlsafe()}}">
         </div>
-        {{player.name}} ({{player.elo}}) [{{player.trueskill_rating()}}]
+
+        <p>
+        <div class="row">
+            <span style="margin-left: auto; margin-right: 3%">
+                <span class="glyphicon glyphicon-arrow-up"></span>{{elo_gain}}
+            </span>
+            <span>
+                <strong>({{player.elo}})</strong>
+            </span>
+            <span style="margin-right: auto; margin-left: 3%">
+                <span class="glyphicon glyphicon-arrow-down"></span>{{elo_loss}}
+            </span>
+        </div>
+        <p>
+        <div class="row">
+            <span style="margin-left: auto; margin-right: 3%">
+                <span class="glyphicon glyphicon-arrow-up"></span>{{player.trueskill_gain(teammate, opponents)}}
+            </span>
+            <span>
+                <strong>[{{player.trueskill_rating()}}]</strong>
+            </span>
+            <span style="margin-right: auto; margin-left: 3%">
+                <span class="glyphicon glyphicon-arrow-down"></span>{{player.trueskill_loss(teammate, opponents)}}
+            </span>
+        </div>
     </button>
 </div>
 
@@ -28,79 +63,78 @@
 
 <div class="message alert" role="alert"></div>
 
+{# TrueSkill Quality: #}
+<div class="row">
+    <h3 class="text-center">
+        <span>{{game.quality}}%</span>
+    </h3>
+</div>
+
+{# Top score buttons: #}
+{% if not game.is_complete() %}
+<div class="row">
+
+    {{score_button(
+        game,
+        game.blue_d.get(),
+        game.blue_o.get(),
+        (game.red_o.get(), game.red_d.get()),
+        defensive_shots,
+        game.blue_elo_points_to_gain(),
+        game.red_elo_points_to_gain(),
+        "btn-primary btn-blue btn-blue-d")}}
+
+    {{score_button(
+        game,
+        game.red_o.get(),
+        game.red_d.get(),
+        (game.blue_o.get(), game.blue_d.get()),
+        offensive_shots,
+        game.red_elo_points_to_gain(),
+        game.blue_elo_points_to_gain(),
+        "btn-danger btn-red btn-red-o")}}
+
+</div>
+
+{% endif %}
+
 {# Scores: #}
 <div class="row">
     <div class="col-xs-6">
-        <h1 class="text-center text-primary blue-score" data-game-length="{{game.length}}">
+        <h1 class="text-right text-primary blue-score" data-game-length="{{game.length}}">
             {{game.blue_shots | length}}
         </h1>
     </div>
     <div class="col-xs-6">
-        <h1 class="text-center text-danger red-score" data-game-length="{{game.length}}">
+        <h1 class="text-left text-danger red-score" data-game-length="{{game.length}}">
             {{game.red_shots | length}}
         </h1>
     </div>
 </div>
 
-{# TrueSkill Quality: #}
-<div class="row">
-    <h4 class="text-center">
-        <span>{{game.quality}}%</span>
-    </h4>
-</div>
-
-{# Elo Points: #}
-<div class="row">
-    <div class="col-xs-2">
-        <h4 class="text-right text-primary">
-            <span class="glyphicon glyphicon-arrow-up"></span>{{game.blue_elo_points_to_gain()}}
-        </h4>
-    </div>
-    <div class="col-xs-2">
-        <h4 class="text-center text-primary">
-            {{game.blue_elo}}
-        </h4>
-    </div>
-    <div class="col-xs-2">
-        <h4 class="text-left text-primary">
-            <span class="glyphicon glyphicon-arrow-down"></span>{{game.red_elo_points_to_gain()}}
-        </h4>
-    </div>
-
-    <div class="col-xs-2">
-        <h4 class="text-right text-danger">
-            <span class="glyphicon glyphicon-arrow-up"></span>{{game.red_elo_points_to_gain()}}
-        </h4>
-    </div>
-    <div class="col-xs-2">
-        <h4 class="text-center text-danger">
-            {{game.red_elo}}
-        </h4>
-    </div>
-    <div class="col-xs-2">
-        <h4 class="text-left text-danger">
-            <span class="glyphicon glyphicon-arrow-down"></span>{{game.blue_elo_points_to_gain()}}
-        </h4>
-    </div>
-</div>
-
-{# Score buttons: #}
+{# Bottom score buttons #}
 {% if not game.is_complete() %}
 <div class="row">
 
-    {{score_button(game, game.blue_d.get(), defensive_shots, "btn-primary btn-blue btn-blue-d")}}
+    {{score_button(
+        game,
+        game.blue_o.get(),
+        game.blue_d.get(),
+        (game.red_o.get(), game.red_d.get()),
+        offensive_shots,
+        game.blue_elo_points_to_gain(),
+        game.red_elo_points_to_gain(),
+        "btn-primary btn-blue btn-blue-o")}}
 
-    {{score_button(game, game.red_o.get(), offensive_shots, "btn-danger btn-red btn-red-o")}}
-
-</div>
-
-<br>
-
-<div class="row">
-
-    {{score_button(game, game.blue_o.get(), offensive_shots, "btn-primary btn-blue btn-blue-o")}}
-
-    {{score_button(game, game.red_d.get(), defensive_shots, "btn-danger btn-red btn-red-d")}}
+    {{score_button(
+        game,
+        game.red_d.get(),
+        game.red_o.get(),
+        (game.blue_o.get(), game.blue_d.get()),
+        defensive_shots,
+        game.red_elo_points_to_gain(),
+        game.blue_elo_points_to_gain(),
+        "btn-danger btn-red btn-red-d")}}
 
 </div>
 

@@ -5,28 +5,28 @@ $(document).ready(function() {
         msg.removeClass("alert-warning");
         msg.removeClass("alert-danger");
         msg.hide();
-    };
+    }
 
     function showError(message) {
         var msg = $(".message");
         msg.addClass("alert-danger");
         msg.text(message);
         msg.show();
-    };
+    }
 
     function showWarning(message) {
         var msg = $(".message");
         msg.addClass("alert-warning");
         msg.text(message);
         msg.show();
-    };
+    }
 
     function showSuccess(message) {
         var msg = $(".message");
         msg.addClass("alert-success");
         msg.text(message);
         msg.show();
-    };
+    }
 
     function verifyRedScore(score) {
         var redScore = +$(".red-score").text();
@@ -34,7 +34,7 @@ $(document).ready(function() {
             return true;
         }
         return false;
-    };
+    }
 
     function verifyBlueScore(score) {
         var blueScore = +$(".blue-score").text();
@@ -42,7 +42,7 @@ $(document).ready(function() {
             return true;
         }
         return false;
-    };
+    }
 
     function incRedScore(){
         var redScoreDiv = $(".red-score");
@@ -56,7 +56,7 @@ $(document).ready(function() {
         else if(redScore === gameLength) {
             gameOver("Game over - Red wins!");
         }
-    };
+    }
 
     function incBlueScore(){
         var blueScoreDiv = $(".blue-score");
@@ -70,7 +70,7 @@ $(document).ready(function() {
         else if(blueScore === gameLength) {
             gameOver("Game over - Blue wins!");
         }
-    };
+    }
 
     function redHalfTime() {
         var red_o = $(".btn-red-o");
@@ -86,7 +86,7 @@ $(document).ready(function() {
         red_d.data("player", tempPlayer);
 
         showWarning("Red half-time!");
-    };
+    }
 
     function blueHalfTime() {
         var blue_o = $(".btn-blue-o");
@@ -102,13 +102,13 @@ $(document).ready(function() {
         blue_d.data("player", tempPlayer);
 
         showWarning("Blue half-time!");
-    };
+    }
 
     function gameOver(message) {
+        showSuccess(message);
         $(".score-btn").hide();
         $(".automatic-rematch").show();
-        showSuccess(message);
-    };
+    }
 
     $(function() {
         Origami.fastclick(document.body);
@@ -117,12 +117,17 @@ $(document).ready(function() {
     resetMessage();
     $(".automatic-rematch").hide();
 
+    if (verifyBlueScore(+$(".blue-score").data("game-length")))
+        gameOver("Blue won this game!");
+    else if (verifyRedScore(+$(".red-score").data("game-length")))
+        gameOver("Red won this game!");
+
     $(".score-btn").click(function(){
         resetMessage();
 
         var data = {
             game_key : $(this).data("game"),
-            player_key : $(this).data("player"),
+            player_key : $(this).data("player")
         };
 
         if($(this).hasClass("btn-red")) {

@@ -53,10 +53,10 @@ class NewGame(webapp2.RequestHandler):
         match_mode = self.request.get("match_mode")
 
         game = Game()
-        if match_mode == "random":
+        if match_mode == "Random":
             game.initialize_random(GAME_LENGTH, player_keys)
 
-        if match_mode == "matched":
+        if match_mode == "Matched":
             game.initialize_matched(GAME_LENGTH, player_keys)
 
         game.put()

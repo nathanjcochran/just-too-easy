@@ -15,6 +15,9 @@ handlers:
 - url: /api.*
   script: controllers.api.app
 
+- url: /.*
+  script: controllers.home.app
+
 libraries:
 - name: webapp2
   version: "2.5.2"

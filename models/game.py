@@ -3,7 +3,9 @@ from google.appengine.ext import ndb
 from google.appengine.ext.ndb import msgprop
 from random import shuffle
 from datetime import datetime
+from shot import *
 import elo
+import skill
 
 class GameStatus(messages.Enum):
     active = 1
@@ -189,11 +191,10 @@ class Game(ndb.Model):
         if winning_side == None:
             return
 
-        now = datetime.now()
-        red_o.last_played = now
-        red_d.last_played = now
-        blue_o.last_played = now
-        blue_d.last_played = now
+        red_o.last_played = self.timestamp
+        red_d.last_played = self.timestamp
+        blue_o.last_played = self.timestamp
+        blue_d.last_played = self.timestamp
 
         red_o.total_games += 1
         red_d.total_games += 1

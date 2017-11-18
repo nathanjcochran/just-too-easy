@@ -22,7 +22,7 @@ class NewGame(webapp2.RequestHandler):
     User selects 4 players to start game:
     """
     def get(self):
-        players = Player.query(Player.deleted == False).order(-Player.last_played)
+        players = Player.query(Player.deleted == False).order(-Player.last_played, -Player.total_games)
         template = jinja.get_template('new_game.html')
         self.response.write(template.render({'players':players}))
 

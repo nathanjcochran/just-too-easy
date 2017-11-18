@@ -1,4 +1,5 @@
 from google.appengine.ext import ndb
+from datetime import *
 import skill
 
 class Player(ndb.Model):
@@ -6,7 +7,7 @@ class Player(ndb.Model):
     elo = ndb.IntegerProperty(required=True, default=1600)
     total_games = ndb.IntegerProperty(required=True, default=0)
     total_wins = ndb.IntegerProperty(required=True, default=0)
-    last_played = ndb.DateTimeProperty(required=True)
+    last_played = ndb.DateTimeProperty(required=True, default=datetime.min)
     image = ndb.KeyProperty(kind='Image')
     deleted = ndb.BooleanProperty(required=True, default=False)
 

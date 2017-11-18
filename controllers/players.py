@@ -24,12 +24,17 @@ class Players(webapp2.RequestHandler):
     def get(self):
 
         # Fetch all non-deleted players with over 10 games:
-        player_query = Player.query(Player.deleted == False, Player.total_games > 10).order(Player.name)
-        players = player_query.fetch()
+        player_query = Player.query()
+        all_players = player_query.fetch()
+
+        # Split into provisional/non-provisional groups:
+        deleted = [player for player in all_players if player.deleted]
+        provisional = [player for player in all_players if not player.deleted and player.total_games < 10]
+        players = [player for player in all_players if not player.deleted and player.total_games >= 10]
 
         # Spit them out in a template:
         template = jinja.get_template('players.html')
-        self.response.write(template.render({'players':players}))
+        self.response.write(template.render({'players': players, 'provisional': provisional, 'deleted': deleted}))
 
 class AddPlayer(webapp2.RequestHandler):
     def post(self):

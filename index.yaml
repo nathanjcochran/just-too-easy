@@ -31,3 +31,8 @@ indexes:
   properties:
   - name: deleted
   - name: name
+
+- kind: Player
+  properties:
+  - name: deleted
+  - name: total_games

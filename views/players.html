@@ -71,7 +71,157 @@
         $("#player-table").DataTable({
             paging: false,
 
-            order: [[1, "asc"]],
+            order: [[3, "desc"]],
+            orderMulti: true,
+
+            aoColumnDefs: [
+                {
+                    bSearchable: false,
+                    aTargets: [0, 2, 3, 4, 5]
+                },
+                {
+                    bSortable: false,
+                    aTargets: [0, 5]
+                }
+            ]
+        });
+    });
+</script>
+
+<h1>Provisional Players</h1>
+<table id="provisional-player-table" class="table table-responsive table-striped">
+    <thead>
+        <tr>
+            <th class="col-xs-2">
+            </th>
+            <th class="col-xs-3">
+                Name
+            </th>
+            <th class="col-xs-3">
+                Elo Rating
+            </th>
+            <th class="col-xs-3">
+                TrueSkill Rating
+            </th>
+            <th class="col-xs-3">
+                Win %
+            </th>
+            <th class="col-xs-1">
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for player in provisional %}
+
+        <tr>
+            <td class="col-xs-2">
+                <img src="/players/image?key={{player.image.urlsafe()}}" class="img-rounded col-xs-12"/>
+            </td>
+            <td class="col-xs-3">
+                <h4>{{player.name}}</h4>
+            </td>
+            <td class="col-xs-3">
+                <h4>{{player.elo}}</h4>
+            </td>
+            <td class="col-xs-3">
+                <h4>{{player.trueskill_rating()}}</h4>
+            </td>
+            <td class="col-xs-3">
+                <h4>{{player.win_percentage()}} %</h4>
+            </td>
+            <td class="col-xs-1">
+                <form action="/players/remove" method="post">
+                    <input type="hidden" name="key" value="{{player.key.urlsafe()}}"/>
+                    <input type="submit" value="Delete" class="btn btn-default"/>
+                </form>
+            </td>
+        </tr>
+
+        {% endfor %}
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#provisional-player-table").DataTable({
+            paging: false,
+
+            order: [[3, "desc"]],
+            orderMulti: true,
+
+            aoColumnDefs: [
+                {
+                    bSearchable: false,
+                    aTargets: [0, 2, 3, 4, 5]
+                },
+                {
+                    bSortable: false,
+                    aTargets: [0, 5]
+                }
+            ]
+        });
+    });
+</script>
+
+<h1>Hall of Fame</h1>
+<table id="deleted-player-table" class="table table-responsive table-striped">
+    <thead>
+        <tr>
+            <th class="col-xs-2">
+            </th>
+            <th class="col-xs-3">
+                Name
+            </th>
+            <th class="col-xs-3">
+                Elo Rating
+            </th>
+            <th class="col-xs-3">
+                TrueSkill Rating
+            </th>
+            <th class="col-xs-3">
+                Win %
+            </th>
+            <th class="col-xs-1">
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for player in deleted %}
+
+        <tr>
+            <td class="col-xs-2">
+                <img src="/players/image?key={{player.image.urlsafe()}}" class="img-rounded col-xs-12"/>
+            </td>
+            <td class="col-xs-3">
+                <h4>{{player.name}}</h4>
+            </td>
+            <td class="col-xs-3">
+                <h4>{{player.elo}}</h4>
+            </td>
+            <td class="col-xs-3">
+                <h4>{{player.trueskill_rating()}}</h4>
+            </td>
+            <td class="col-xs-3">
+                <h4>{{player.win_percentage()}} %</h4>
+            </td>
+            <td class="col-xs-1">
+                <form action="/players/remove" method="post">
+                    <input type="hidden" name="key" value="{{player.key.urlsafe()}}"/>
+                    <input type="submit" value="Delete" class="btn btn-default"/>
+                </form>
+            </td>
+        </tr>
+
+        {% endfor %}
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#deleted-player-table").DataTable({
+            paging: false,
+
+            order: [[3, "desc"]],
             orderMulti: true,
 
             aoColumnDefs: [

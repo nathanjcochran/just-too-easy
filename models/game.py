@@ -2,6 +2,7 @@ from protorpc import messages
 from google.appengine.ext import ndb
 from google.appengine.ext.ndb import msgprop
 from random import shuffle
+from datetime import datetime
 import elo
 
 class GameStatus(messages.Enum):
@@ -187,6 +188,12 @@ class Game(ndb.Model):
         winning_side = self.winning_side()
         if winning_side == None:
             return
+
+        now = datetime.now()
+        red_o.last_played = now
+        red_d.last_played = now
+        blue_o.last_played = now
+        blue_d.last_played = now
 
         red_o.total_games += 1
         red_d.total_games += 1

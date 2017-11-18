@@ -22,7 +22,7 @@ class NewGame(webapp2.RequestHandler):
     User selects 4 players to start game:
     """
     def get(self):
-        players = Player.query(Player.deleted == False).order(Player.name)
+        players = Player.query(Player.deleted == False).order(-Player.last_played)
         template = jinja.get_template('new_game.html')
         self.response.write(template.render({'players':players}))
 
@@ -72,8 +72,6 @@ class AutomaticRematch(webapp2.RequestHandler):
         url_key = self.request.get('game')
         game_key = ndb.Key(urlsafe = url_key)
         game = game_key.get()
-
-        winning_side = game.winning_side()
 
         new_game = Game()
         new_game.initialize(game.length, game.red_o, game.red_d, game.blue_o, game.blue_d)

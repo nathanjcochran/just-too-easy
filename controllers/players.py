@@ -23,8 +23,8 @@ class ViewImage(webapp2.RequestHandler):
 class Players(webapp2.RequestHandler):
     def get(self):
 
-        # Fetch all non-deleted players:
-        player_query = Player.query(Player.deleted == False).order(Player.name)
+        # Fetch all non-deleted players with over 10 games:
+        player_query = Player.query(Player.deleted == False, Player.total_games > 10).order(Player.name)
         players = player_query.fetch()
 
         # Spit them out in a template:
@@ -91,4 +91,3 @@ app = webapp2.WSGIApplication([
     ('/players/image', ViewImage),
     ('/players/recalc', RecalculateStats)
 ], debug=True)
-

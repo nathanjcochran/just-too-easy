@@ -3,57 +3,11 @@ from google.appengine.ext import ndb
 from google.appengine.ext.ndb import msgprop
 from random import shuffle
 import elo
-import skill
 
 class GameStatus(messages.Enum):
     active = 1
     complete = 2
     deleted = 3
-
-class Position(messages.Enum):
-    offense = 1
-    defense = 2
-    either = 3
-
-class Side(messages.Enum):
-    red = 1
-    blue = 2
-
-class Image(ndb.Model):
-    data = ndb.BlobProperty(required=True)
-
-class Player(ndb.Model):
-    name = ndb.StringProperty(required=True)
-    elo = ndb.IntegerProperty(required=True, default=1600)
-    total_games = ndb.IntegerProperty(required=True, default=0)
-    total_wins = ndb.IntegerProperty(required=True, default=0)
-    image = ndb.KeyProperty(kind='Image')
-    deleted = ndb.BooleanProperty(required=True, default=False)
-
-    # TrueSkill
-    mu = ndb.FloatProperty(required=True, default=skill.DEFAULT_MU)
-    sigma = ndb.FloatProperty(required=True, default=skill.DEFAULT_SIGMA)
-
-    def win_percentage(self):
-        if self.total_games > 0:
-            return round(float(self.total_wins) / self.total_games * 100, 2)
-        else:
-            return None
-
-    def trueskill_rating(self):
-        return skill.get_rating(self)
-
-    def trueskill_gain(self, teammate, opponents):
-        ratings = skill.update_ratings((self, teammate), opponents)[0][0]
-        rating = skill.calculate_rating(ratings.mu, ratings.sigma)
-
-        return rating - self.trueskill_rating()
-
-    def trueskill_loss(self, teammate, opponents):
-        ratings = skill.update_ratings(opponents, (self, teammate))[1][0]
-        rating = skill.calculate_rating(ratings.mu, ratings.sigma)
-
-        return self.trueskill_rating() - rating
 
 class Game(ndb.Model):
     length = ndb.IntegerProperty(default=6)
@@ -317,9 +271,3 @@ class Game(ndb.Model):
     def blue_elo_points_to_gain(self):
         return elo.calculate(self.blue_elo, self.red_elo)[0]
 
-class Shot(ndb.Model): # ancestor = Game => strongly consistent results
-    player = ndb.KeyProperty(kind='Player', required=True)
-    position = msgprop.EnumProperty(Position, required=True)
-    side = msgprop.EnumProperty(Side, required=True)
-    against = ndb.KeyProperty(kind='Player', required=True)
-    timestamp = ndb.DateTimeProperty(auto_now_add=True, required=True)

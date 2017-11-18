@@ -3,7 +3,7 @@ import jinja2
 import json
 import skill
 from google.appengine.ext import ndb
-from models import *
+from models.player import *
 
 jinja = jinja2.Environment(
         loader=jinja2.FileSystemLoader('./views'),
@@ -23,7 +23,7 @@ class ViewImage(webapp2.RequestHandler):
 class Players(webapp2.RequestHandler):
     def get(self):
 
-        # Fetch all non-deleted players with over 10 games:
+        # Fetch all non-deleted players :
         player_query = Player.query()
         all_players = player_query.fetch()
 

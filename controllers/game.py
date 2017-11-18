@@ -2,7 +2,8 @@ import json
 import webapp2
 import jinja2
 from random import shuffle
-from models import *
+from models.game import *
+from models.player import *
 from google.appengine.api import memcache
 
 GAME_LENGTH = 6

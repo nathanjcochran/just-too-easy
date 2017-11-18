@@ -2,6 +2,7 @@ import webapp2
 import jinja2
 import json
 import skill
+from google.appengine.api import images
 from google.appengine.ext import ndb
 from models.player import *
 from models.game import *
@@ -43,8 +44,15 @@ class AddPlayer(webapp2.RequestHandler):
         player = Player()
         player.name = self.request.get('name')
 
+        # Fix orientation, if necessary:
+        img = images.Image(self.request.get('image'))
+        img.set_correct_orientation(images.CORRECT_ORIENTATION)
+        
+        # Resize to square (also helps reduce size, so it fits in data store):
+        img.resize(width=500, height=500, crop_to_fit=True)
+
         image = Image()
-        image.data = self.request.get('image')
+        image.data = img.execute_transforms()
         image.put()
 
         player.image = image.key
@@ -101,11 +109,35 @@ class RecalculateStats(webapp2.RequestHandler):
 
         self.response.write("Success")
 
+class FixImages(webapp2.RequestHandler):
+
+    def get(self):
+        # Fetch all players:
+        player_query = Player.query()
+        players = player_query.fetch()
+
+        for player in players:
+            image = player.image.get()
+
+            # Fix orientation, if necessary:
+            img = images.Image(image.data)
+            img.set_correct_orientation(images.CORRECT_ORIENTATION)
+
+            # Resize to square (also helps reduce size, so it fits in data store):
+            img.resize(width=500, height=500, crop_to_fit=True)
+
+            # Save:
+            image.data = img.execute_transforms()
+            image.put()
+
+        self.response.write("Success")
+
 app = webapp2.WSGIApplication([
     ('/players', Players),
     ('/players/add', AddPlayer),
     ('/players/remove', RemovePlayer),
     ('/players/restore', RestorePlayer),
     ('/players/image', ViewImage),
-    ('/players/recalc', RecalculateStats)
+    ('/players/recalc', RecalculateStats),
+    ('/players/fiximages', FixImages)
 ], debug=True)

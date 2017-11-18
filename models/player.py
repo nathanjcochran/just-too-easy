@@ -2,6 +2,9 @@ from google.appengine.ext import ndb
 from datetime import *
 import skill
 
+class Image(ndb.Model):
+    data = ndb.BlobProperty(required=True)
+
 class Player(ndb.Model):
     name = ndb.StringProperty(required=True)
     elo = ndb.IntegerProperty(required=True, default=1600)

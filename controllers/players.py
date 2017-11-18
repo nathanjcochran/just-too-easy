@@ -60,6 +60,16 @@ class RemovePlayer(webapp2.RequestHandler):
 
         self.redirect('/players')
 
+class RestorePlayer(webapp2.RequestHandler):
+    def post(self):
+        url_key = self.request.get('key')
+        player_key = ndb.Key(urlsafe = url_key)
+        player = player_key.get()
+        player.deleted = False
+        player.put()
+
+        self.redirect('/players')
+
 class RecalculateStats(webapp2.RequestHandler):
 
     def get(self):
@@ -93,6 +103,7 @@ app = webapp2.WSGIApplication([
     ('/players', Players),
     ('/players/add', AddPlayer),
     ('/players/remove', RemovePlayer),
+    ('/players/restore', RestorePlayer),
     ('/players/image', ViewImage),
     ('/players/recalc', RecalculateStats)
 ], debug=True)

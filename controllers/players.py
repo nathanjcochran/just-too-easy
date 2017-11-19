@@ -27,7 +27,10 @@ class RankedPlayers(webapp2.RequestHandler):
     def get(self):
 
         # Fetch all ranked players :
-        player_query = Player.query(Player.deleted == False, Player.total_games >= 10)
+        player_query = Player.query(
+                Player.deleted == False,
+                Player.total_games >= RANKED_THRESHOLD,
+        )
         players = player_query.fetch()
 
         # Spit them out in a template:
@@ -38,7 +41,10 @@ class UnrankedPlayers(webapp2.RequestHandler):
     def get(self):
 
         # Fetch all unranked players :
-        player_query = Player.query(Player.deleted == False, Player.total_games < 10)
+        player_query = Player.query(
+                Player.deleted == False,
+                Player.total_games < RANKED_THRESHOLD
+            )
         players = player_query.fetch()
 
         # Spit them out in a template:
@@ -90,10 +96,10 @@ class RemovePlayer(webapp2.RequestHandler):
         player.deleted = True
         player.put()
 
-        # TODO: redirect back to where they came from
-        self.redirect('/players/ranked')
+        # Redirect back to where they came from:
+        self.redirect(self.request.url)
 
-class RestorePlayer(webapp2.RequestHandler):
+class RevivePlayer(webapp2.RequestHandler):
     def post(self):
         url_key = self.request.get('key')
         player_key = ndb.Key(urlsafe = url_key)
@@ -101,7 +107,7 @@ class RestorePlayer(webapp2.RequestHandler):
         player.deleted = False
         player.put()
 
-        if player.total_games >= 10:
+        if player.is_ranked():
             self.redirect('/players/ranked')
         else:
             self.redirect('/players/unranked')
@@ -164,7 +170,7 @@ app = webapp2.WSGIApplication([
     ('/players/hall-of-fame', DeletedPlayers),
     ('/players/new', NewPlayer),
     ('/players/remove', RemovePlayer),
-    ('/players/restore', RestorePlayer),
+    ('/players/revive', RevivePlayer),
     ('/players/image', ViewImage),
     ('/players/recalc', RecalculateStats),
     ('/players/fiximages', FixImages)

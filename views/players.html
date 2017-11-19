@@ -80,10 +80,17 @@
                 <h4>{{player.win_percentage()}} %</h4>
             </td>
             <td class="col-xs-1">
+                {% if title == 'Hall of Fame' %}
+                <form action="/players/revive" method="post">
+                    <input type="hidden" name="key" value="{{player.key.urlsafe()}}"/>
+                    <input type="submit" value="Revive" class="btn btn-default"/>
+                </form>
+                {% else %}
                 <form action="/players/remove" method="post">
                     <input type="hidden" name="key" value="{{player.key.urlsafe()}}"/>
                     <input type="submit" value="Delete" class="btn btn-default"/>
                 </form>
+                {% endif %}
             </td>
         </tr>
 

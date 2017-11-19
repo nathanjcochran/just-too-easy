@@ -2,6 +2,8 @@ from google.appengine.ext import ndb
 from datetime import *
 import skill
 
+RANKED_THRESHOLD = 10 # Number of games you have to play to be ranked
+
 class Image(ndb.Model):
     data = ndb.BlobProperty(required=True)
 
@@ -23,6 +25,9 @@ class Player(ndb.Model):
             return round(float(self.total_wins) / self.total_games * 100, 2)
         else:
             return None
+
+    def is_ranked(self):
+        return self.total_games >= RANKED_THRESHOLD
 
     def trueskill_rating(self):
         return skill.get_rating(self)

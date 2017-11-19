@@ -107,7 +107,7 @@ $(document).ready(function() {
     function gameOver(message) {
         showSuccess(message);
         $(".score-btn").hide();
-        $(".automatic-rematch").show();
+        $(".rematch-buttons").show();
     }
 
     $(function() {
@@ -115,12 +115,13 @@ $(document).ready(function() {
     });
 
     resetMessage();
-    $(".automatic-rematch").hide();
 
     if (verifyBlueScore(+$(".blue-score").data("game-length")))
         gameOver("Blue won this game!");
     else if (verifyRedScore(+$(".red-score").data("game-length")))
         gameOver("Red won this game!");
+    else
+        $(".rematch-buttons").hide();
 
     $(".score-btn").click(function(){
         resetMessage();

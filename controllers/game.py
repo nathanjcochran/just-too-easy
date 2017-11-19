@@ -73,8 +73,18 @@ class AutomaticRematch(webapp2.RequestHandler):
         game_key = ndb.Key(urlsafe = url_key)
         game = game_key.get()
 
+        rematch_mode = self.request.get("rematch_mode")
+
         new_game = Game()
-        new_game.initialize(game.length, game.red_o, game.red_d, game.blue_o, game.blue_d)
+        if rematch_mode == "Automatic Rematch":
+            new_game.initialize(game.length, game.red_o, game.red_d, game.blue_o, game.blue_d)
+        elif rematch_mode == "Random Rematch":
+            new_game.initialize_random(game.length, [game.red_o, game.red_d, game.blue_o, game.blue_d])
+        elif rematch_mode == "Matched Rematch":
+            new_game.initialize_matched(game.length, [game.red_o, game.red_d, game.blue_o, game.blue_d])
+        else:
+            raise "Invalid rematch mode: " + rematch_mode
+
         new_game.put()
 
         self.redirect('/game/play?key=' + new_game.key.urlsafe())
@@ -91,8 +101,9 @@ class PlayGame(webapp2.RequestHandler):
             players_dict = {p.key : p.name for p in players}
 
             active_games = Game.query(Game.status == GameStatus.active).order(-Game.timestamp).fetch()
+            completed_games = Game.query(Game.status == GameStatus.complete).order(-Game.timestamp).fetch()
             template = jinja.get_template('view_games.html')
-            self.response.write(template.render({"active_games":active_games, "players":players_dict}))
+            self.response.write(template.render({"active_games":active_games, "completed_games":completed_games, "players":players_dict}))
             return;
 
         game_key = ndb.Key(urlsafe = url_key)

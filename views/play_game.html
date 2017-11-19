@@ -141,11 +141,13 @@
 {% endif %}
 
 {# Automatic Rematch button: #}
-<div class="row automatic-rematch">
+<div class="row rematch-buttons">
     <div class="col-xs-12 text-center">
         <form method="POST" action="/game/rematch">
             <input type="hidden" name="game" value="{{game.key.urlsafe()}}"/>
-            <input type="submit" value="Automatic Rematch" class="btn btn-default btn-lg"/>
+            <input type="submit" name="rematch_mode" value="Automatic Rematch" class="btn btn-default btn-lg"/>
+            <input type="submit" name="rematch_mode" value="Random Rematch" class="btn btn-default btn-lg"/>
+            <input type="submit" name="rematch_mode" value="Matched Rematch" class="btn btn-default btn-lg"/>
         </form>
     </div>
 </div>

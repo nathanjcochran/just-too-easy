@@ -30,15 +30,15 @@ indexes:
 - kind: Player
   properties:
   - name: deleted
-  - name: name
-
-- kind: Player
-  properties:
-  - name: deleted
   - name: last_played
     direction: desc
   - name: total_games
     direction: desc
+
+- kind: Player
+  properties:
+  - name: deleted
+  - name: name
 
 - kind: Player
   properties:

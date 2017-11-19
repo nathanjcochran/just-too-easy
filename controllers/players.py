@@ -28,16 +28,16 @@ class Players(webapp2.RequestHandler):
 
         # Fetch all non-deleted players :
         player_query = Player.query()
-        all_players = player_query.fetch()
+        players = player_query.fetch()
 
         # Split into provisional/non-provisional groups:
-        deleted = [player for player in all_players if player.deleted]
-        provisional = [player for player in all_players if not player.deleted and player.total_games < 10]
-        players = [player for player in all_players if not player.deleted and player.total_games >= 10]
+        ranked = [player for player in players if not player.deleted and player.total_games >= 10]
+        unranked = [player for player in players if not player.deleted and player.total_games < 10]
+        deleted = [player for player in players if player.deleted]
 
         # Spit them out in a template:
         template = jinja.get_template('players.html')
-        self.response.write(template.render({'players': players, 'provisional': provisional, 'deleted': deleted}))
+        self.response.write(template.render({'ranked': ranked, 'unranked': unranked, 'deleted': deleted}))
 
 class AddPlayer(webapp2.RequestHandler):
     def post(self):

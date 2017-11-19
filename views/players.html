@@ -13,8 +13,8 @@
 
 {% block body %}
 
-<h1>Players</h1>
-<table id="player-table" class="table table-responsive table-striped">
+<h1>Ranked</h1>
+<table id="ranked-player-table" class="table table-responsive table-striped">
     <thead>
         <tr>
             <th class="col-xs-2">
@@ -39,7 +39,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for player in players %}
+        {% for player in ranked %}
 
         <tr>
             <td class="col-xs-2">
@@ -74,7 +74,7 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $("#player-table").DataTable({
+        $("#ranked-player-table").DataTable({
             paging: false,
 
             order: [[4, "desc"]],
@@ -94,8 +94,8 @@
     });
 </script>
 
-<h1>Provisional Players</h1>
-<table id="provisional-player-table" class="table table-responsive table-striped">
+<h1>Unranked</h1>
+<table id="unranked-player-table" class="table table-responsive table-striped">
     <thead>
         <tr>
             <th class="col-xs-2">
@@ -120,7 +120,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for player in provisional %}
+        {% for player in unranked %}
 
         <tr>
             <td class="col-xs-2">
@@ -155,7 +155,7 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $("#provisional-player-table").DataTable({
+        $("#unranked-player-table").DataTable({
             paging: false,
 
             order: [[4, "desc"]],

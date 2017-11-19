@@ -97,7 +97,7 @@ class RemovePlayer(webapp2.RequestHandler):
         player.put()
 
         # Redirect back to where they came from:
-        self.redirect(self.request.url)
+        self.redirect(self.request.referer)
 
 class RevivePlayer(webapp2.RequestHandler):
     def post(self):

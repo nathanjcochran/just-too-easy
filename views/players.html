@@ -11,10 +11,29 @@
 
 {% block players_nav %}class="active"{% endblock %}
 
+{% block ranked_players_nav %}
+    {% if title == 'Ranked' %}
+        class="active"
+    {% endif %}
+{% endblock %}
+
+{% block unranked_players_nav %}
+    {% if title == 'Unranked' %}
+        class="active"
+    {% endif %}
+{% endblock %}
+
+
+{% block hall_of_fame_nav %}
+    {% if title == 'Hall of Fame' %}
+        class="active"
+    {% endif %}
+{% endblock %}
+
 {% block body %}
 
-<h1>Ranked</h1>
-<table id="ranked-player-table" class="table table-responsive table-striped">
+<h1>{{title}}</h1>
+<table id="player-table" class="table table-responsive table-striped">
     <thead>
         <tr>
             <th class="col-xs-2">
@@ -31,7 +50,7 @@
             <th class="col-xs-2">
                 TrueSkill Rating
             </th>
-            <th class="col-xs-2">
+            <th class="col-xs-1">
                 Win %
             </th>
             <th class="col-xs-1">
@@ -39,7 +58,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for player in ranked %}
+        {% for player in players %}
 
         <tr>
             <td class="col-xs-2">
@@ -57,7 +76,7 @@
             <td class="col-xs-2">
                 <h4>{{player.trueskill_rating()}}</h4>
             </td>
-            <td class="col-xs-2">
+            <td class="col-xs-1">
                 <h4>{{player.win_percentage()}} %</h4>
             </td>
             <td class="col-xs-1">
@@ -74,7 +93,7 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $("#ranked-player-table").DataTable({
+        $("#player-table").DataTable({
             paging: false,
 
             order: [[4, "desc"]],
@@ -93,192 +112,5 @@
         });
     });
 </script>
-
-<h1>Unranked</h1>
-<table id="unranked-player-table" class="table table-responsive table-striped">
-    <thead>
-        <tr>
-            <th class="col-xs-2">
-            </th>
-            <th class="col-xs-2">
-                Name
-            </th>
-            <th class="col-xs-2">
-                Games
-            </th>
-            <th class="col-xs-2">
-                Elo Rating
-            </th>
-            <th class="col-xs-2">
-                TrueSkill Rating
-            </th>
-            <th class="col-xs-2">
-                Win %
-            </th>
-            <th class="col-xs-1">
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for player in unranked %}
-
-        <tr>
-            <td class="col-xs-2">
-                <img src="/players/image?key={{player.image.urlsafe()}}" class="img-rounded col-xs-12"/>
-            </td>
-            <td class="col-xs-2">
-                <h4>{{player.name}}</h4>
-            </td>
-            <td class="col-xs-2">
-                <h4>{{player.total_games}}</h4>
-            </td>
-            <td class="col-xs-2">
-                <h4>{{player.elo}}</h4>
-            </td>
-            <td class="col-xs-2">
-                <h4>{{player.trueskill_rating()}}</h4>
-            </td>
-            <td class="col-xs-2">
-                <h4>{{player.win_percentage()}} %</h4>
-            </td>
-            <td class="col-xs-1">
-                <form action="/players/remove" method="post">
-                    <input type="hidden" name="key" value="{{player.key.urlsafe()}}"/>
-                    <input type="submit" value="Delete" class="btn btn-default"/>
-                </form>
-            </td>
-        </tr>
-
-        {% endfor %}
-    </tbody>
-</table>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("#unranked-player-table").DataTable({
-            paging: false,
-
-            order: [[4, "desc"]],
-            orderMulti: true,
-
-            aoColumnDefs: [
-                {
-                    bSearchable: false,
-                    aTargets: [0, 2, 3, 4, 5, 6]
-                },
-                {
-                    bSortable: false,
-                    aTargets: [0, 6]
-                }
-            ]
-        });
-    });
-</script>
-
-<h1>Hall of Fame</h1>
-<table id="deleted-player-table" class="table table-responsive table-striped">
-    <thead>
-        <tr>
-            <th class="col-xs-2">
-            </th>
-            <th class="col-xs-2">
-                Name
-            </th>
-            <th class="col-xs-2">
-                Games
-            </th>
-            <th class="col-xs-2">
-                Elo Rating
-            </th>
-            <th class="col-xs-2">
-                TrueSkill Rating
-            </th>
-            <th class="col-xs-2">
-                Win %
-            </th>
-            <th class="col-xs-1">
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for player in deleted %}
-
-        <tr>
-            <td class="col-xs-2">
-                <img src="/players/image?key={{player.image.urlsafe()}}" class="img-rounded col-xs-12"/>
-            </td>
-            <td class="col-xs-2">
-                <h4>{{player.name}}</h4>
-            </td>
-            <td class="col-xs-2">
-                <h4>{{player.total_games}}</h4>
-            </td>
-            <td class="col-xs-2">
-                <h4>{{player.elo}}</h4>
-            </td>
-            <td class="col-xs-2">
-                <h4>{{player.trueskill_rating()}}</h4>
-            </td>
-            <td class="col-xs-2">
-                <h4>{{player.win_percentage()}} %</h4>
-            </td>
-            <td class="col-xs-1">
-                <form action="/players/restore" method="post">
-                    <input type="hidden" name="key" value="{{player.key.urlsafe()}}"/>
-                    <input type="submit" value="Restore" class="btn btn-default"/>
-                </form>
-            </td>
-        </tr>
-
-        {% endfor %}
-    </tbody>
-</table>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("#deleted-player-table").DataTable({
-            paging: false,
-
-            order: [[4, "desc"]],
-            orderMulti: true,
-
-            aoColumnDefs: [
-                {
-                    bSearchable: false,
-                    aTargets: [0, 2, 3, 4, 5, 6]
-                },
-                {
-                    bSortable: false,
-                    aTargets: [0, 6]
-                }
-            ]
-        });
-    });
-</script>
-
-<form class="form-horizontal" role="form" action="/players/add" method="post" enctype="multipart/form-data">
-    <fieldset>
-        <legend>Add a Player</legend>
-        <div class="form-group">
-            <label for="name" class="col-xs-2 control-label">Name</label>
-            <div class="col-xs-8">
-                <input id="name" name="name" class="form-control" type="text"/>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="image" class="col-xs-2 control-label">Image</label>
-            <div class="col-xs-8">
-                <input id="image" name="image" type="file"/>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-xs-offset-2 col-xs-10">
-                <input type="submit" value="Submit" class="btn btn-default"/>
-            </div>
-        </div>
-    </fieldset>
-</form>
 
 {% endblock body %}

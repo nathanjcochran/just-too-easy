@@ -1,0 +1,33 @@
+{% extends "master.html" %}
+
+{% block players_nav %}class="active"{% endblock %}
+{% block new_player_nav %}class="active"{% endblock %}
+
+{% block body %}
+
+<form class="form-horizontal" role="form" action="/players/new" method="post" enctype="multipart/form-data">
+    <fieldset>
+        <legend>New Player</legend>
+        <div class="form-group">
+            <label for="name" class="col-xs-2 control-label">Name</label>
+            <div class="col-xs-8">
+                <input id="name" name="name" class="form-control" type="text"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="image" class="col-xs-2 control-label">Image</label>
+            <div class="col-xs-8">
+                <input id="image" name="image" type="file"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-offset-2 col-xs-10">
+                <input type="submit" value="Submit" class="btn btn-default"/>
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+{% endblock body %}

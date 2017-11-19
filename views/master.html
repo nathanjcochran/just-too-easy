@@ -27,7 +27,16 @@
 
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li {% block players_nav %}{% endblock %}><a href="/players">Players</a></li>
+                        <li {% block players_nav %}{% endblock %} class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Players <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li {% block ranked_players_nav %}{% endblock %} ><a href="/players/ranked">Ranked</a></li>
+                                <li {% block unranked_players_nav %}{% endblock %} ><a href="/players/unranked">Unranked</a></li>
+                                <li {% block hall_of_fame_nav %}{% endblock %} ><a href="/players/hall-of-fame">Hall of Fame</a></li>
+                                <li class="divider"></li>
+                                <li {% block new_player_nav %}{% endblock %} ><a href="/players/new">New Player</a></li>
+                            </ul>
+                        </li>
                         <li {% block games_nav %}{% endblock %}><a href="/game/play">Games</a></li>
                         <li {% block new_game_nav %}{% endblock %}><a href="/game/new">New Game</a></li>
                     </ul>

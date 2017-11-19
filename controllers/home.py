@@ -15,7 +15,7 @@ jinja = jinja2.Environment(
 
 class Home(webapp2.RequestHandler):
     def get(self):
-        self.redirect("/players")
+        self.redirect("/players/ranked")
 
 app = webapp2.WSGIApplication([
     ('/', Home),

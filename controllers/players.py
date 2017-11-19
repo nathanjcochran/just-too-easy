@@ -23,23 +23,45 @@ class ViewImage(webapp2.RequestHandler):
         self.response.headers['Cache-Control'] = 'public, max-age=3600'
         self.response.out.write(image.data)
 
-class Players(webapp2.RequestHandler):
+class RankedPlayers(webapp2.RequestHandler):
     def get(self):
 
-        # Fetch all non-deleted players :
-        player_query = Player.query()
+        # Fetch all ranked players :
+        player_query = Player.query(Player.deleted == False, Player.total_games >= 10)
         players = player_query.fetch()
-
-        # Split into provisional/non-provisional groups:
-        ranked = [player for player in players if not player.deleted and player.total_games >= 10]
-        unranked = [player for player in players if not player.deleted and player.total_games < 10]
-        deleted = [player for player in players if player.deleted]
 
         # Spit them out in a template:
         template = jinja.get_template('players.html')
-        self.response.write(template.render({'ranked': ranked, 'unranked': unranked, 'deleted': deleted}))
+        self.response.write(template.render({'title': 'Ranked', 'players':players}))
 
-class AddPlayer(webapp2.RequestHandler):
+class UnrankedPlayers(webapp2.RequestHandler):
+    def get(self):
+
+        # Fetch all unranked players :
+        player_query = Player.query(Player.deleted == False, Player.total_games < 10)
+        players = player_query.fetch()
+
+        # Spit them out in a template:
+        template = jinja.get_template('players.html')
+        self.response.write(template.render({'title': 'Unranked', 'players':players}))
+
+class DeletedPlayers(webapp2.RequestHandler):
+    def get(self):
+
+        # Fetch all deleted players :
+        player_query = Player.query(Player.deleted == True)
+        players = player_query.fetch()
+
+        # Spit them out in a template:
+        template = jinja.get_template('players.html')
+        self.response.write(template.render({'title': 'Hall of Fame', 'players':players}))
+
+
+class NewPlayer(webapp2.RequestHandler):
+    def get(self):
+        template = jinja.get_template('new_player.html')
+        self.response.write(template.render())
+
     def post(self):
         player = Player()
         player.name = self.request.get('name')
@@ -58,7 +80,7 @@ class AddPlayer(webapp2.RequestHandler):
         player.image = image.key
         player.put()
 
-        self.redirect('/players')
+        self.redirect('/players/unranked')
 
 class RemovePlayer(webapp2.RequestHandler):
     def post(self):
@@ -68,7 +90,8 @@ class RemovePlayer(webapp2.RequestHandler):
         player.deleted = True
         player.put()
 
-        self.redirect('/players')
+        # TODO: redirect back to where they came from
+        self.redirect('/players/ranked')
 
 class RestorePlayer(webapp2.RequestHandler):
     def post(self):
@@ -78,7 +101,10 @@ class RestorePlayer(webapp2.RequestHandler):
         player.deleted = False
         player.put()
 
-        self.redirect('/players')
+        if player.total_games >= 10:
+            self.redirect('/players/ranked')
+        else:
+            self.redirect('/players/unranked')
 
 class RecalculateStats(webapp2.RequestHandler):
 
@@ -133,8 +159,10 @@ class FixImages(webapp2.RequestHandler):
         self.response.write("Success")
 
 app = webapp2.WSGIApplication([
-    ('/players', Players),
-    ('/players/add', AddPlayer),
+    ('/players/ranked', RankedPlayers),
+    ('/players/unranked', UnrankedPlayers),
+    ('/players/hall-of-fame', DeletedPlayers),
+    ('/players/new', NewPlayer),
     ('/players/remove', RemovePlayer),
     ('/players/restore', RestorePlayer),
     ('/players/image', ViewImage),

@@ -119,11 +119,11 @@ class NewGame(webapp2.RequestHandler):
 
         game.put()
 
-        self.redirect('/game/play?key=' + game.key.urlsafe())
+        self.redirect('/games/play?key=' + game.key.urlsafe())
 
-class AutomaticRematch(webapp2.RequestHandler):
+class Rematch(webapp2.RequestHandler):
     """
-    Start a new game that is an automatic rematch of a previous game
+    Start a new game that is a rematch of a previous game
     """
     def post(self):
         url_key = self.request.get('game')
@@ -144,7 +144,7 @@ class AutomaticRematch(webapp2.RequestHandler):
 
         new_game.put()
 
-        self.redirect('/game/play?key=' + new_game.key.urlsafe())
+        self.redirect('/games/play?key=' + new_game.key.urlsafe())
 
 class PlayGame(webapp2.RequestHandler):
     """
@@ -222,6 +222,6 @@ app = webapp2.WSGIApplication([
     ('/games/active', ActiveGames),
     ('/games/completed', CompletedGames),
     ('/games/new', NewGame),
-    ('/games/rematch', AutomaticRematch),
+    ('/games/rematch', Rematch),
     ('/games/play', PlayGame)
     ], debug=True)

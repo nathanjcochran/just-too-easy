@@ -147,7 +147,7 @@ $(document).ready(function() {
         $.ajax({
             type: "POST",
             dataType : "json",
-            url:"/game/play",
+            url:"/games/play",
             data : data,
             success : function(data, textStatus) {
                 if(data.success) {

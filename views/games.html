@@ -68,9 +68,9 @@
     </tbody>
 </table>
 
-{% if more %}
+{% if next_link %}
 <div class="col-xs-12 text-right">
-    <a href='/games/active?next={{next.urlsafe()}}'>More</a>
+    <a href='{{next_link}}'>More</a>
 </div>
 {% endif %}
 

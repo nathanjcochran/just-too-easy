@@ -30,6 +30,10 @@ class ActiveGames(webapp2.RequestHandler):
             PAGE_SIZE,
             start_cursor=cursor,
          )
+        
+        next_link = None
+        if next_cursor and more:
+            next_link = '/games/active?next=' + next_cursor.urlsafe()
 
         players = Player.query()
         players_dict = {p.key : p.name for p in players}
@@ -38,8 +42,7 @@ class ActiveGames(webapp2.RequestHandler):
         self.response.write(template.render({
             "title": "Active",
             "games": games,
-            "next": next_cursor,
-            "more": more,
+            "next_link": next_link,
             "players": players_dict,
         }))
 
@@ -56,6 +59,10 @@ class CompletedGames(webapp2.RequestHandler):
             start_cursor=cursor,
         )
 
+        next_link = None
+        if next_cursor and more:
+            next_link = '/games/completed?next=' + next_cursor.urlsafe()
+
         players = Player.query()
         players_dict = {p.key : p.name for p in players}
 
@@ -63,8 +70,7 @@ class CompletedGames(webapp2.RequestHandler):
         self.response.write(template.render({
             "title": "Completed",
             "games":games,
-            "next": next_cursor,
-            "more": more,
+            "next_link": next_link,
             "players":players_dict,
         }))
 

@@ -37,8 +37,15 @@
                                 <li {% block new_player_nav %}{% endblock %} ><a href="/players/new">New Player</a></li>
                             </ul>
                         </li>
-                        <li {% block games_nav %}{% endblock %}><a href="/game/play">Games</a></li>
-                        <li {% block new_game_nav %}{% endblock %}><a href="/game/new">New Game</a></li>
+                        <li {% block games_nav %}{% endblock %} class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Games <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li {% block active_games_nav %}{% endblock %} ><a href="/games/active">Active</a></li>
+                                <li {% block completed_games_nav %}{% endblock %} ><a href="/games/completed">Completed</a></li>
+                                <li class="divider"></li>
+                                <li {% block new_game_nav %}{% endblock %} ><a href="/games/new">New Game</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>

@@ -17,6 +17,32 @@ def entity_from_url_key(url_key):
     key = ndb.Key(urlsafe = url_key)
     return key.get()
 
+class ActiveGames(webapp2.RequestHandler):
+    def get(self):
+        players = Player.query()
+        players_dict = {p.key : p.name for p in players}
+
+        game_query = Game.query(
+                Game.status == GameStatus.active,
+        ).order(-Game.timestamp)
+        games = game_query.fetch()
+
+        template = jinja.get_template('games.html')
+        self.response.write(template.render({"title": "Active", "games":games, "players":players_dict}))
+
+class CompletedGames(webapp2.RequestHandler):
+    def get(self):
+        players = Player.query()
+        players_dict = {p.key : p.name for p in players}
+
+        game_query = Game.query(
+                Game.status == GameStatus.complete
+        ).order(-Game.timestamp)
+        games = game_query.fetch()
+
+        template = jinja.get_template('games.html')
+        self.response.write(template.render({"title": "Completed", "games":games, "players":players_dict}))
+
 class NewGame(webapp2.RequestHandler):
     """
     User selects 4 players to start game:
@@ -97,14 +123,8 @@ class PlayGame(webapp2.RequestHandler):
         url_key = self.request.get('key')
 
         if not url_key:
-            players = Player.query()
-            players_dict = {p.key : p.name for p in players}
-
-            active_games = Game.query(Game.status == GameStatus.active).order(-Game.timestamp).fetch()
-            completed_games = Game.query(Game.status == GameStatus.complete).order(-Game.timestamp).fetch()
-            template = jinja.get_template('view_games.html')
-            self.response.write(template.render({"active_games":active_games, "completed_games":completed_games, "players":players_dict}))
-            return;
+            self.redirect('/games/active')
+            return
 
         game_key = ndb.Key(urlsafe = url_key)
         game = game_key.get()
@@ -168,7 +188,9 @@ class PlayGame(webapp2.RequestHandler):
 
 
 app = webapp2.WSGIApplication([
-    ('/game/new', NewGame),
-    ('/game/rematch', AutomaticRematch),
-    ('/game/play', PlayGame)
+    ('/games/active', ActiveGames),
+    ('/games/completed', CompletedGames),
+    ('/games/new', NewGame),
+    ('/games/rematch', AutomaticRematch),
+    ('/games/play', PlayGame)
     ], debug=True)

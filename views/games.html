@@ -1,0 +1,71 @@
+{% extends "master.html" %}
+
+{% block games_nav %}class="active"{% endblock %}
+
+{% block active_games_nav %}
+    {% if title == 'Active' %}
+        class="active"
+    {% endif %}
+{% endblock %}
+
+{% block completed_games_nav %}
+    {% if title == 'Completed' %}
+        class="active"
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+
+<h1>{{title}}</h1>
+<table class="table table-responsive table-striped">
+
+    <thead>
+        <tr>
+            <th>
+                Time Stamp
+            </th>
+            <th>
+                Red Offense
+            </th>
+            <th>
+                Red Defense
+            </th>
+            <th>
+                Blue Offense
+            </th>
+            <th>
+                Blue Defense
+            </th>
+            <th>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for game in games %}
+
+        <tr>
+            <td class="col-xs-2">
+                {{game.timestamp}}
+            </td>
+            <td class="col-xs-2">
+                {{players[game.red_o]}}
+            </td>
+            <td class="col-xs-2">
+                {{players[game.red_d]}}
+            </td>
+            <td class="col-xs-2">
+                {{players[game.blue_o]}}
+            </td>
+            <td class="col-xs-2">
+                {{players[game.blue_d]}}
+            </td>
+            <td class="col-xs-2">
+                <a href="/games/play?key={{game.key.urlsafe()}}">Resume</a>
+            </td>
+        </tr>
+
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock body %}

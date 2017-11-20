@@ -7,6 +7,7 @@ from models.player import *
 from google.appengine.api import memcache
 
 GAME_LENGTH = 6
+PAGE_SIZE = 10
 
 jinja = jinja2.Environment(
         loader=jinja2.FileSystemLoader('./views'),
@@ -19,29 +20,53 @@ def entity_from_url_key(url_key):
 
 class ActiveGames(webapp2.RequestHandler):
     def get(self):
+        cursor = ndb.Cursor(urlsafe=self.request.get('next'))
+
+        games, next_cursor, more = Game.query(
+            Game.status == GameStatus.active,
+        ).order(
+            -Game.timestamp,
+        ).fetch_page(
+            PAGE_SIZE,
+            start_cursor=cursor,
+         )
+
         players = Player.query()
         players_dict = {p.key : p.name for p in players}
 
-        game_query = Game.query(
-                Game.status == GameStatus.active,
-        ).order(-Game.timestamp)
-        games = game_query.fetch()
-
         template = jinja.get_template('games.html')
-        self.response.write(template.render({"title": "Active", "games":games, "players":players_dict}))
+        self.response.write(template.render({
+            "title": "Active",
+            "games": games,
+            "next": next_cursor,
+            "more": more,
+            "players": players_dict,
+        }))
 
 class CompletedGames(webapp2.RequestHandler):
     def get(self):
+        cursor = ndb.Cursor(urlsafe=self.request.get('next'))
+
+        games, next_cursor, more = Game.query(
+            Game.status == GameStatus.complete
+        ).order(
+            -Game.timestamp,
+        ).fetch_page(
+            PAGE_SIZE,
+            start_cursor=cursor,
+        )
+
         players = Player.query()
         players_dict = {p.key : p.name for p in players}
 
-        game_query = Game.query(
-                Game.status == GameStatus.complete
-        ).order(-Game.timestamp)
-        games = game_query.fetch()
-
         template = jinja.get_template('games.html')
-        self.response.write(template.render({"title": "Completed", "games":games, "players":players_dict}))
+        self.response.write(template.render({
+            "title": "Completed",
+            "games":games,
+            "next": next_cursor,
+            "more": more,
+            "players":players_dict,
+        }))
 
 class NewGame(webapp2.RequestHandler):
     """

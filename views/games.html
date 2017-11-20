@@ -68,4 +68,10 @@
     </tbody>
 </table>
 
+{% if more %}
+<div class="col-xs-12 text-right">
+    <a href='/games/active?next={{next.urlsafe()}}'>More</a>
+</div>
+{% endif %}
+
 {% endblock body %}

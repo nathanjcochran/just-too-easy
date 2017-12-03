@@ -9,22 +9,35 @@ class Image(ndb.Model):
 
 class Player(ndb.Model):
     name = ndb.StringProperty(required=True)
-    elo = ndb.IntegerProperty(required=True, default=1600)
-    total_games = ndb.IntegerProperty(required=True, default=0)
-    total_wins = ndb.IntegerProperty(required=True, default=0)
     last_played = ndb.DateTimeProperty(required=True, default=datetime.min)
     image = ndb.KeyProperty(kind='Image')
     deleted = ndb.BooleanProperty(required=True, default=False)
 
+    # Stats:
+    total_games = ndb.IntegerProperty(required=True, default=0)
+    total_wins = ndb.IntegerProperty(required=True, default=0)
+
+    # Elo:
+    elo = ndb.IntegerProperty(required=True, default=1600)
+
     # TrueSkill
     mu = ndb.FloatProperty(required=True, default=skill.DEFAULT_MU)
     sigma = ndb.FloatProperty(required=True, default=skill.DEFAULT_SIGMA)
+
+    # Shots:
+    total_red_o_shots = ndb.IntegerProperty(required=True, default=0)
+    total_red_d_shots = ndb.IntegerProperty(required=True, default=0)
+    total_blue_o_shots = ndb.IntegerProperty(required=True, default=0)
+    total_blue_d_shots = ndb.IntegerProperty(required=True, default=0)
 
     def win_percentage(self):
         if self.total_games > 0:
             return round(float(self.total_wins) / self.total_games * 100, 2)
         else:
             return None
+    
+    def total_shots(self):
+        return self.total_red_o_shots + self.total_red_d_shots + self.total_blue_o_shots + self.total_blue_d_shots
 
     def is_ranked(self):
         return self.total_games >= RANKED_THRESHOLD

@@ -221,6 +221,29 @@ class Game(ndb.Model):
         else:
             raise Exception("Error: invalid winning side")
 
+        # Shots:
+        red_shots = ndb.get_multi(self.red_shots)
+        blue_shots = ndb.get_multi(self.blue_shots)
+
+        # Red:
+        for shot in red_shots:
+            if player.position == Position.offense:
+                red_o.total_red_o_shots += 1
+            elif player.position == Position.defense:
+                red_d.total_red_d_shots += 1
+            else:
+                raise Exception:("Error: invalid position")
+
+        # Blue:
+        for shot in blue_shots:
+            player = shot.player.get()
+            if player.position == Position.offense:
+                blue_o.total_blue_o_shots += 1
+            elif player.position == Position.defense:
+                blue_d.total_blue_d_shots += 1
+            else:
+                raise Exception:("Error: invalid position")
+
     def update_elo(self, winner1, winner2, winner_elo, loser1, loser2, loser_elo):
         winner_points, loser_points = elo.calculate(winner_elo, loser_elo)
 

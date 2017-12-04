@@ -180,7 +180,9 @@ class Game(ndb.Model):
             blue_o = self.blue_o.get()
             blue_d = self.blue_d.get()
 
-            self.adjust_player_statistics(red_o, red_d, blue_o, blue_d)
+            shots = ndb.get_multi(self.red_shots + self.blue_shots)
+
+            self.adjust_player_statistics(red_o, red_d, blue_o, blue_d, shots)
 
             red_o.put()
             red_d.put()
@@ -189,7 +191,7 @@ class Game(ndb.Model):
 
         self.put()
 
-    def adjust_player_statistics(self, red_o, red_d, blue_o, blue_d):
+    def adjust_player_statistics(self, red_o, red_d, blue_o, blue_d, shots):
         winning_side = self.winning_side
         if winning_side == None:
             return
@@ -250,11 +252,11 @@ class Game(ndb.Model):
             raise Exception("Error: invalid winning side")
 
         # Shots:
-        red_shots = ndb.get_multi(self.red_shots)
-        blue_shots = ndb.get_multi(self.blue_shots)
+        shot_dict = {s.key: s for s in shots}
 
         # Red:
-        for shot in red_shots:
+        for shot_key in self.red_shots:
+            shot = shot_dict[shot_key]
             player = shot.player.get() # Should be cached
             if not player:
                 raise Exception("Bad player key: " + shot.player.urlsafe())
@@ -275,7 +277,8 @@ class Game(ndb.Model):
                 raise Exception("Error: invalid original position")
                 
         # Blue:
-        for shot in blue_shots:
+        for shot_key in self.blue_shots:
+            shot = shot_dict[shot_key]
             player = shot.player.get() # Should be cached
             if not player:
                 raise Exception("Bad player key: " + shot.player.urlsafe())

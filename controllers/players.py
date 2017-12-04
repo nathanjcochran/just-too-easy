@@ -130,6 +130,10 @@ class RecalculateStats(webapp2.RequestHandler):
         for player in players:
             player.reset_stats()
 
+        # Fetch all shots:
+        shot_query = Shot.query()
+        shots = shot_query.fetch()
+
         # Put in dict for faster lookup:
         player_dict = {p.key : p for p in players}
 
@@ -145,7 +149,7 @@ class RecalculateStats(webapp2.RequestHandler):
 
             # Adjust each players statistics,
             # according to the outcome out the game:
-            game.adjust_player_statistics(player_dict[game.red_o], player_dict[game.red_d], player_dict[game.blue_o], player_dict[game.blue_d])
+            game.adjust_player_statistics(player_dict[game.red_o], player_dict[game.red_d], player_dict[game.blue_o], player_dict[game.blue_d], shots)
 
         # Save players:
         for key in player_dict:

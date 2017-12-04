@@ -1,0 +1,402 @@
+{% extends "master.html" %}
+
+{% block scripts %}
+
+<link rel="stylesheet" href="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css" />
+
+<script type="text/javascript" src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+
+{% endblock scripts %}
+
+{% block players_nav %}class="active"{% endblock %}
+
+{% block body %}
+
+<h1>{{player.name}}</h1>
+<br><br>
+
+<h3>Overall:</h3>
+<table class="table table-responsive table-striped player-table">
+    <thead>
+        <tr>
+            <th class="col-xs-2">
+            </th>
+            <th class="col-xs-1">
+                Played
+            </th>
+            <th class="col-xs-1">
+                Wins
+            </th>
+            <th class="col-xs-1">
+                Win Rate
+            </th>
+            <th class="col-xs-1">
+                Halftimes Reached
+            </th>
+            <th class="col-xs-1">
+                Halftime Rate
+            </th>
+            <th class="col-xs-1">
+                Shots
+            </th>
+            <th class="col-xs-1">
+                Avg. Shots Per Game
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="col-xs-2">
+                All
+            </td>
+            <td class="col-xs-1">
+                {{player.total_games}}
+            </td>
+            <td class="col-xs-1">
+                {{player.total_wins}}
+            </td>
+            <td class="col-xs-1">
+                {{player.win_rate}}%
+            </td>
+            <td class="col-xs-1">
+                {{player.total_halftimes}}
+            </td>
+            <td class="col-xs-1">
+                {{player.halftime_rate}}%
+            </td>
+            <td class="col-xs-1">
+                {{player.total_shots}}
+            </td>
+            <td class="col-xs-1">
+                {{player.average_shots_per_game}}
+            </td>
+        </tr>
+    </tbody>
+</table>
+<br><br>
+
+<h3>By Side:</h3>
+<table class="table table-responsive table-striped player-table">
+    <thead>
+        <tr>
+            <th class="col-xs-2">
+            </th>
+            <th class="col-xs-1">
+                Played
+            </th>
+            <th class="col-xs-1">
+                Wins
+            </th>
+            <th class="col-xs-1">
+                Win Rate
+            </th>
+            <th class="col-xs-1">
+                Halftimes Reached
+            </th>
+            <th class="col-xs-1">
+                Halftime Rate
+            </th>
+            <th class="col-xs-1">
+                Shots
+            </th>
+            <th class="col-xs-1">
+                Avg. Shots Per Game
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="col-xs-2">
+                Red
+            </td>
+            <td class="col-xs-1">
+                {{player.red_games}}
+            </td>
+            <td class="col-xs-1">
+                {{player.red_wins}}
+            </td>
+            <td class="col-xs-1">
+                {{player.red_win_rate}}%
+            </td>
+            <td class="col-xs-1">
+                {{player.red_halftimes}}
+            </td>
+            <td class="col-xs-1">
+                {{player.red_halftime_rate}}%
+            </td>
+            <td class="col-xs-1">
+                {{player.red_shots}}
+            </td>
+            <td class="col-xs-1">
+                {{player.average_red_shots_per_game}}
+            </td>
+        </tr>
+        <tr>
+            <td class="col-xs-2">
+                Blue
+            </td>
+            <td class="col-xs-1">
+                {{player.blue_games}}
+            </td>
+            <td class="col-xs-1">
+                {{player.blue_wins}}
+            </td>
+            <td class="col-xs-1">
+                {{player.blue_win_rate}}%
+            </td>
+            <td class="col-xs-1">
+                {{player.blue_halftimes}}
+            </td>
+            <td class="col-xs-1">
+                {{player.blue_halftime_rate}}%
+            </td>
+            <td class="col-xs-1">
+                {{player.blue_shots}}
+            </td>
+            <td class="col-xs-1">
+                {{player.average_blue_shots_per_game}}
+            </td>
+        </tr>
+    </tbody>
+</table>
+<br><br>
+
+<h3>By Starting Position:</h3>
+<table class="table table-responsive table-striped player-table">
+    <thead>
+        <tr>
+            <th class="col-xs-2">
+            </th>
+            <th class="col-xs-1">
+                Played
+            </th>
+            <th class="col-xs-1">
+                Wins
+            </th>
+            <th class="col-xs-1">
+                Win Rate
+            </th>
+            <th class="col-xs-1">
+                Halftimes Reached
+            </th>
+            <th class="col-xs-1">
+                Halftime Rate
+            </th>
+            <th class="col-xs-1">
+                Shots
+            </th>
+            <th class="col-xs-1">
+                Avg. Shots Per Game
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="col-xs-2">
+                Offense
+            </td>
+            <td class="col-xs-1">
+                {{player.offense_games}}
+            </td>
+            <td class="col-xs-1">
+                {{player.offense_wins}}
+            </td>
+            <td class="col-xs-1">
+                {{player.offense_win_rate}}%
+            </td>
+            <td class="col-xs-1">
+                {{player.offense_halftimes}}
+            </td>
+            <td class="col-xs-1">
+                {{player.offense_halftime_rate}}%
+            </td>
+            <td class="col-xs-1">
+                {{player.offense_start_shots}}
+            </td>
+            <td class="col-xs-1">
+                {{player.average_offense_start_shots_per_game}}
+            </td>
+        </tr>
+        <tr>
+            <td class="col-xs-2">
+                Defense
+            </td>
+            <td class="col-xs-1">
+                {{player.defense_games}}
+            </td>
+            <td class="col-xs-1">
+                {{player.defense_wins}}
+            </td>
+            <td class="col-xs-1">
+                {{player.defense_win_rate}}%
+            </td>
+            <td class="col-xs-1">
+                {{player.defense_halftimes}}
+            </td>
+            <td class="col-xs-1">
+                {{player.defense_halftime_rate}}%
+            </td>
+            <td class="col-xs-1">
+                {{player.defense_start_shots}}
+            </td>
+            <td class="col-xs-1">
+                {{player.average_defense_start_shots_per_game}}
+            </td>
+        </tr>
+    </tbody>
+</table>
+<br><br>
+
+<h3>By Side and Starting Position:</h3>
+<table class="table table-responsive table-striped player-table">
+    <thead>
+        <tr>
+            <th class="col-xs-2">
+            </th>
+            <th class="col-xs-1">
+                Played
+            </th>
+            <th class="col-xs-1">
+                Wins
+            </th>
+            <th class="col-xs-1">
+                Win Rate
+            </th>
+            <th class="col-xs-1">
+                Halftimes Reached
+            </th>
+            <th class="col-xs-1">
+                Halftime Rate
+            </th>
+            <th class="col-xs-1">
+                Shots
+            </th>
+            <th class="col-xs-1">
+                Avg. Shots Per Game
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="col-xs-2">
+                Red Offense
+            </td>
+            <td class="col-xs-1">
+                {{player.red_o_games}}
+            </td>
+            <td class="col-xs-1">
+                {{player.red_o_wins}}
+            </td>
+            <td class="col-xs-1">
+                {{player.red_o_win_rate}}%
+            </td>
+            <td class="col-xs-1">
+                {{player.red_o_halftimes}}
+            </td>
+            <td class="col-xs-1">
+                {{player.red_o_halftime_rate}}%
+            </td>
+            <td class="col-xs-1">
+                {{player.red_o_start_shots}}
+            </td>
+            <td class="col-xs-1">
+                {{player.average_red_o_start_shots_per_game}}
+            </td>
+        </tr>
+        <tr>
+            <td class="col-xs-2">
+                Red Defense
+            </td>
+            <td class="col-xs-1">
+                {{player.red_d_games}}
+            </td>
+            <td class="col-xs-1">
+                {{player.red_d_wins}}
+            </td>
+            <td class="col-xs-1">
+                {{player.red_d_win_rate}}%
+            </td>
+            <td class="col-xs-1">
+                {{player.red_d_halftimes}}
+            </td>
+            <td class="col-xs-1">
+                {{player.red_d_halftime_rate}}%
+            </td>
+            <td class="col-xs-1">
+                {{player.red_d_start_shots}}
+            </td>
+            <td class="col-xs-1">
+                {{player.average_red_d_start_shots_per_game}}
+            </td>
+        </tr>
+        <tr>
+            <td class="col-xs-2">
+                Blue Offense
+            </td>
+            <td class="col-xs-1">
+                {{player.blue_o_games}}
+            </td>
+            <td class="col-xs-1">
+                {{player.blue_o_wins}}
+            </td>
+            <td class="col-xs-1">
+                {{player.blue_o_win_rate}}%
+            </td>
+            <td class="col-xs-1">
+                {{player.blue_o_halftimes}}
+            </td>
+            <td class="col-xs-1">
+                {{player.blue_o_halftime_rate}}%
+            </td>
+            <td class="col-xs-1">
+                {{player.blue_o_start_shots}}
+            </td>
+            <td class="col-xs-1">
+                {{player.average_blue_o_start_shots_per_game}}
+            </td>
+        </tr>
+        <tr>
+            <td class="col-xs-2">
+                Blue Defense
+            </td>
+            <td class="col-xs-1">
+                {{player.blue_d_games}}
+            </td>
+            <td class="col-xs-1">
+                {{player.blue_d_wins}}
+            </td>
+            <td class="col-xs-1">
+                {{player.blue_d_win_rate}}%
+            </td>
+            <td class="col-xs-1">
+                {{player.blue_d_halftimes}}
+            </td>
+            <td class="col-xs-1">
+                {{player.blue_d_halftime_rate}}%
+            </td>
+            <td class="col-xs-1">
+                {{player.blue_d_start_shots}}
+            </td>
+            <td class="col-xs-1">
+                {{player.average_blue_d_start_shots_per_game}}
+            </td>
+        </tr>
+    </tbody>
+</table>
+<br><br>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(".player-table").DataTable({
+            paging: false,
+            searching: false,
+            info: false,
+
+            order: [[3, "desc"]],
+            orderMulti: true
+        });
+    });
+</script>
+
+{% endblock body %}

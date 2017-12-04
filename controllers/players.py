@@ -23,6 +23,16 @@ class ViewImage(webapp2.RequestHandler):
         self.response.headers['Cache-Control'] = 'public, max-age=3600'
         self.response.out.write(image.data)
 
+class ViewPlayer(webapp2.RequestHandler):
+    def get(self):
+        url_key = self.request.get('key')
+        player_key = ndb.Key(urlsafe = url_key)
+        player = player_key.get()
+
+        # Spit them out in a template:
+        template = jinja.get_template('player.html')
+        self.response.write(template.render({'player':player}))
+
 class RankedPlayers(webapp2.RequestHandler):
     def get(self):
         # Fetch all ranked players :
@@ -166,6 +176,7 @@ class FixImages(webapp2.RequestHandler):
         self.response.write("Success")
 
 app = webapp2.WSGIApplication([
+    ('/players', ViewPlayer),
     ('/players/ranked', RankedPlayers),
     ('/players/unranked', UnrankedPlayers),
     ('/players/hall-of-fame', DeletedPlayers),

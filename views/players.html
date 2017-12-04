@@ -65,7 +65,7 @@
                 <img src="/players/image?key={{player.image.urlsafe()}}" class="img-rounded col-xs-12"/>
             </td>
             <td class="col-xs-2">
-                <h4>{{player.name}}</h4>
+                <h4><a href="/players?key={{player.key.urlsafe()}}">{{player.name}}</a></h4>
             </td>
             <td class="col-xs-2">
                 <h4>{{player.total_games}}</h4>
@@ -77,7 +77,7 @@
                 <h4>{{player.trueskill_rating}}</h4>
             </td>
             <td class="col-xs-1">
-                <h4>{{player.win_percentage}} %</h4>
+                <h4>{{player.win_rate}} %</h4>
             </td>
             <td class="col-xs-1">
                 {% if title == 'Hall of Fame' %}

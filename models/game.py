@@ -126,7 +126,7 @@ class Game(ndb.Model):
         is over
         """
 
-        if self.status != GameStatus.active
+        if self.status != GameStatus.active:
             raise Exception("Error: game not active")
 
         # Get the side and position of the player who made the shot:
@@ -210,6 +210,7 @@ class Game(ndb.Model):
         if self.red_halftime_reached:
             red_o.red_d_halftimes += 1
             red_d.red_o_halftimes += 1
+
             red_o.red_d_games += 1
             red_d.red_o_games += 1
         else:
@@ -219,6 +220,7 @@ class Game(ndb.Model):
         if self.blue_halftime_reached:
             blue_o.blue_d_halftimes += 1
             blue_d.blue_o_halftimes += 1
+
             blue_o.blue_d_games += 1
             blue_d.blue_o_games += 1
         else:
@@ -261,9 +263,9 @@ class Game(ndb.Model):
             
             originalSide, originalPosition = self.original_side_and_position(shot.player)
             if originalPosition == Position.offense:
-                player.red_o_game_shots += 1
+                player.red_o_start_shots += 1
             elif originalPosition == Position.defense:
-                player.red_d_game_shots += 1
+                player.red_d_start_shots += 1
             else:
                 raise Exception("Error: invalid original position")
                 
@@ -279,9 +281,9 @@ class Game(ndb.Model):
             
             originalSide, originalPosition = self.original_side_and_position(shot.player)
             if originalPosition == Position.offense:
-                player.blue_o_game_shots += 1
+                player.blue_o_start_shots += 1
             elif originalPosition == Position.defense:
-                player.blue_d_game_shots += 1
+                player.blue_d_start_shots += 1
             else:
                 raise Exception("Error: invalid original position")
 

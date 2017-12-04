@@ -256,6 +256,9 @@ class Game(ndb.Model):
         # Red:
         for shot in red_shots:
             player = shot.player.get() # Should be cached
+            if not player:
+                raise Exception("Bad player key: " + shot.player.urlsafe())
+
             if shot.position == Position.offense:
                 player.red_o_shots += 1
             elif shot.position == Position.defense:
@@ -274,6 +277,9 @@ class Game(ndb.Model):
         # Blue:
         for shot in blue_shots:
             player = shot.player.get() # Should be cached
+            if not player:
+                raise Exception("Bad player key: " + shot.player.urlsafe())
+
             if shot.position == Position.offense:
                 player.blue_o_shots += 1
             elif shot.position == Position.defense:

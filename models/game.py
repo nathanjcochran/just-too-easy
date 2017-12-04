@@ -228,6 +228,8 @@ class Game(ndb.Model):
             blue_d.blue_d_games += 1
 
         # Wins/elo/trueskill:
+        self.red_elo = (red_o.elo + red_d.elo) / 2
+        self.blue_elo = (blue_o.elo + blue_d.elo) / 2
         if winning_side == Side.red:
             # Flipped because of halftimes:
             red_o.red_d_wins += 1

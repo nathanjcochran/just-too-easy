@@ -1,5 +1,6 @@
 import math
 
+DEFAULT_ELO = 1600
 K_FACTOR  = 32.0
 
 def calculate(winner_rating, loser_rating):

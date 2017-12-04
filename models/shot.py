@@ -11,9 +11,6 @@ class Side(messages.Enum):
     red = 1
     blue = 2
 
-class Image(ndb.Model):
-    data = ndb.BlobProperty(required=True)
-
 class Shot(ndb.Model): # ancestor = Game => strongly consistent results
     player = ndb.KeyProperty(kind='Player', required=True)
     position = msgprop.EnumProperty(Position, required=True)

@@ -47,7 +47,7 @@
                 <span class="glyphicon glyphicon-arrow-up"></span>{{player.trueskill_gain(teammate, opponents)}}
             </span>
             <span>
-                <strong>[{{player.trueskill_rating()}}]</strong>
+                <strong>[{{player.trueskill_rating}}]</strong>
             </span>
             <span style="margin-right: auto; margin-left: 3%">
                 <span class="glyphicon glyphicon-arrow-down"></span>{{player.trueskill_loss(teammate, opponents)}}
@@ -71,7 +71,7 @@
 </div>
 
 {# Top score buttons: #}
-{% if not game.is_complete() %}
+{% if not game.is_complete %}
 <div class="row">
 
     {{score_button(
@@ -80,8 +80,8 @@
         game.blue_o.get(),
         (game.red_o.get(), game.red_d.get()),
         defensive_shots,
-        game.blue_elo_points_to_gain(),
-        game.red_elo_points_to_gain(),
+        game.blue_elo_points_to_gain,
+        game.red_elo_points_to_gain,
         "btn-primary btn-blue btn-blue-d")}}
 
     {{score_button(
@@ -90,8 +90,8 @@
         game.red_d.get(),
         (game.blue_o.get(), game.blue_d.get()),
         offensive_shots,
-        game.red_elo_points_to_gain(),
-        game.blue_elo_points_to_gain(),
+        game.red_elo_points_to_gain,
+        game.blue_elo_points_to_gain,
         "btn-danger btn-red btn-red-o")}}
 
 </div>
@@ -113,7 +113,7 @@
 </div>
 
 {# Bottom score buttons #}
-{% if not game.is_complete() %}
+{% if not game.is_complete %}
 <div class="row">
 
     {{score_button(
@@ -122,8 +122,8 @@
         game.blue_d.get(),
         (game.red_o.get(), game.red_d.get()),
         offensive_shots,
-        game.blue_elo_points_to_gain(),
-        game.red_elo_points_to_gain(),
+        game.blue_elo_points_to_gain,
+        game.red_elo_points_to_gain,
         "btn-primary btn-blue btn-blue-o")}}
 
     {{score_button(
@@ -132,8 +132,8 @@
         game.red_o.get(),
         (game.blue_o.get(), game.blue_d.get()),
         defensive_shots,
-        game.red_elo_points_to_gain(),
-        game.blue_elo_points_to_gain(),
+        game.red_elo_points_to_gain,
+        game.blue_elo_points_to_gain,
         "btn-danger btn-red btn-red-d")}}
 
 </div>

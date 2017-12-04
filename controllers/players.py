@@ -25,7 +25,6 @@ class ViewImage(webapp2.RequestHandler):
 
 class RankedPlayers(webapp2.RequestHandler):
     def get(self):
-
         # Fetch all ranked players :
         player_query = Player.query(
                 Player.deleted == False,
@@ -39,7 +38,6 @@ class RankedPlayers(webapp2.RequestHandler):
 
 class UnrankedPlayers(webapp2.RequestHandler):
     def get(self):
-
         # Fetch all unranked players :
         player_query = Player.query(
                 Player.deleted == False,
@@ -53,7 +51,6 @@ class UnrankedPlayers(webapp2.RequestHandler):
 
 class DeletedPlayers(webapp2.RequestHandler):
     def get(self):
-
         # Fetch all deleted players :
         player_query = Player.query(Player.deleted == True)
         players = player_query.fetch()
@@ -107,7 +104,7 @@ class RevivePlayer(webapp2.RequestHandler):
         player.deleted = False
         player.put()
 
-        if player.is_ranked():
+        if player.is_ranked:
             self.redirect('/players/ranked')
         else:
             self.redirect('/players/unranked')
@@ -119,30 +116,34 @@ class RecalculateStats(webapp2.RequestHandler):
         player_query = Player.query()
         players = player_query.fetch()
 
+        # Reset their statistics:
         for player in players:
-            player.elo = 1600
-            player.mu = skill.DEFAULT_MU
-            player.sigma = skill.DEFAULT_SIGMA
-            player.total_games = 0
-            player.total_wins = 0
+            player.reset_stats()
 
+        # Put in dict for faster lookup:
         player_dict = {p.key : p for p in players}
 
+        # Fetch all games in chronological order:
         game_query = Game.query().order(Game.timestamp)
         games = game_query.fetch()
 
+        # For each game:
         for game in games:
-            if not game.is_complete():
+            # Skip incomplete games:
+            if not game.is_complete:
                 continue
-            game.adjust_player_ratings(player_dict[game.red_o], player_dict[game.red_d], player_dict[game.blue_o], player_dict[game.blue_d])
 
+            # Adjust each players statistics,
+            # according to the outcome out the game:
+            game.adjust_player_statistics(player_dict[game.red_o], player_dict[game.red_d], player_dict[game.blue_o], player_dict[game.blue_d])
+
+        # Save players:
         for key in player_dict:
             player_dict[key].put()
 
         self.response.write("Success")
 
 class FixImages(webapp2.RequestHandler):
-
     def get(self):
         # Fetch all players:
         player_query = Player.query()

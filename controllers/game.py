@@ -190,8 +190,8 @@ class PlayGame(webapp2.RequestHandler):
             if not player_key:
                 raise Exception('Error: invalid player key')
 
-            red_score = game.red_score()
-            blue_score = game.blue_score()
+            red_score = game.red_score
+            blue_score = game.blue_score
 
             game.register_shot(player_key)
 
@@ -207,16 +207,15 @@ class PlayGame(webapp2.RequestHandler):
         else:
             response = {
                 'success' : True,
-                'game_over' : game.status != GameStatus.active,
+                'game_over' : game.is_complete,
                 'red_elo' : game.red_elo,
                 'blue_elo' : game.blue_elo,
-                'red_score' : len(game.red_shots),
-                'blue_score' : len(game.blue_shots),
+                'red_score' : game.red_score,
+                'blue_score' : game.blue_score,
             }
 
             self.response.write(json.dumps(response))
             self.response.status = 200
-
 
 app = webapp2.WSGIApplication([
     ('/games/active', ActiveGames),

@@ -42,18 +42,15 @@
                 Name
             </th>
             <th class="col-xs-2">
-                Games
+                Elo
             </th>
             <th class="col-xs-2">
-                Elo Rating
+                TrueSkill
             </th>
             <th class="col-xs-2">
-                TrueSkill Rating
+                Win Rate
             </th>
-            <th class="col-xs-1">
-                Win %
-            </th>
-            <th class="col-xs-1">
+            <th class="col-xs-2">
             </th>
         </tr>
     </thead>
@@ -68,18 +65,15 @@
                 <h4><a href="/players?key={{player.key.urlsafe()}}">{{player.name}}</a></h4>
             </td>
             <td class="col-xs-2">
-                <h4>{{player.total_games}}</h4>
-            </td>
-            <td class="col-xs-2">
                 <h4>{{player.elo}}</h4>
             </td>
             <td class="col-xs-2">
                 <h4>{{player.trueskill_rating}}</h4>
             </td>
-            <td class="col-xs-1">
+            <td class="col-xs-2">
                 <h4>{{player.win_rate}} %</h4>
             </td>
-            <td class="col-xs-1">
+            <td class="col-xs-2">
                 {% if title == 'Hall of Fame' %}
                 <form action="/players/revive" method="post">
                     <input type="hidden" name="key" value="{{player.key.urlsafe()}}"/>
@@ -102,18 +96,19 @@
     $(document).ready(function() {
         $("#player-table").DataTable({
             paging: false,
+            info: false,
 
-            order: [[4, "desc"]],
+            order: [[3, "desc"]],
             orderMulti: true,
 
             aoColumnDefs: [
                 {
                     bSearchable: false,
-                    aTargets: [0, 2, 3, 4, 5, 6]
+                    aTargets: [0, 2, 3, 4, 5]
                 },
                 {
                     bSortable: false,
-                    aTargets: [0, 6]
+                    aTargets: [0, 5]
                 }
             ]
         });

@@ -16,6 +16,7 @@ class Game(ndb.Model):
     length = ndb.IntegerProperty(default=6)
     status = msgprop.EnumProperty(GameStatus, required=True)
     timestamp = ndb.DateTimeProperty(auto_now_add=True, required=True)
+    end_timestamp = ndb.DateTimeProperty()
 
     # Players: (current positions)
     red_o = ndb.KeyProperty(kind='Player', required=True)
@@ -23,7 +24,8 @@ class Game(ndb.Model):
     blue_o = ndb.KeyProperty(kind='Player', required=True)
     blue_d = ndb.KeyProperty(kind='Player', required=True)
 
-    # Scores:
+    # Shots:
+    shots = ndb.StructuredProperty(Shot, repeated=True)
     red_shots = ndb.KeyProperty(kind='Shot', repeated=True)
     blue_shots = ndb.KeyProperty(kind='Shot', repeated=True)
 
@@ -140,38 +142,39 @@ class Game(ndb.Model):
         shot.player = player_key
         shot.position = position
         shot.side = side
+        shot.timestamp = datetime.now()
 
         # If red scored:
         if side == Side.red:
             shot.against = self.blue_d
-            shot.put()
-            self.red_shots.append(shot.key)
+            self.shots.append(shot)
 
             # Red half time:
-            if len(self.red_shots) == self.length/2:
+            if self.red_score == self.length/2:
                 temp = self.red_o
                 self.red_o = self.red_d
                 self.red_d = temp
 
             # Mark game complete if over:
-            if len(self.red_shots) >= self.length:
+            if self.red_score >= self.length:
                 self.status = GameStatus.complete
+                self.end_timestamp = shot.timestamp
 
         # If blue scored:
         elif side == Side.blue:
             shot.against = self.red_d
-            shot.put()
-            self.blue_shots.append(shot.key)
+            self.shots.append(shot)
 
             # Blue half time:
-            if len(self.blue_shots) == self.length/2:
+            if self.blue_score == self.length/2:
                 temp = self.blue_o
                 self.blue_o = self.blue_d
                 self.blue_d = temp
 
             # Mark game complete if over:
-            if len(self.blue_shots) >= self.length:
+            if self.blue_score >= self.length:
                 self.status = GameStatus.complete
+                self.end_timestamp = shot.timestamp
 
         # Adjust player's ratings if over:
         if self.is_complete:
@@ -180,9 +183,7 @@ class Game(ndb.Model):
             blue_o = self.blue_o.get()
             blue_d = self.blue_d.get()
 
-            shots = ndb.get_multi(self.red_shots + self.blue_shots)
-
-            self.adjust_player_statistics(red_o, red_d, blue_o, blue_d, shots)
+            self.adjust_player_statistics(red_o, red_d, blue_o, blue_d)
 
             red_o.put()
             red_d.put()
@@ -191,7 +192,14 @@ class Game(ndb.Model):
 
         self.put()
 
-    def adjust_player_statistics(self, red_o, red_d, blue_o, blue_d, shots):
+    def adjust_player_statistics(self, red_o, red_d, blue_o, blue_d):
+        # TODO: Hack to turn shot keys into structured properties
+        if len(self.shots) == 0:
+            self.shots = ndb.get_multi(self.red_shots + self.blue_shots)
+            self.shots.sort(key=lambda shot: shot.timestamp)
+            self.end_timestamp = self.shots[-1].timestamp
+            self.put()
+
         winning_side = self.winning_side
         if winning_side == None:
             return
@@ -210,6 +218,7 @@ class Game(ndb.Model):
 
         # Positional Games Played/Halftimes Reached:
         if self.red_halftime_reached:
+            # Flipped because of halftimes:
             red_o.red_d_halftimes += 1
             red_d.red_o_halftimes += 1
 
@@ -220,6 +229,7 @@ class Game(ndb.Model):
             red_d.red_d_games += 1
 
         if self.blue_halftime_reached:
+            # Flipped because of halftimes:
             blue_o.blue_d_halftimes += 1
             blue_d.blue_o_halftimes += 1
 
@@ -252,52 +262,34 @@ class Game(ndb.Model):
             raise Exception("Error: invalid winning side")
 
         # Shots:
-        shot_dict = {s.key: s for s in shots}
-
-        # Red:
-        for shot_key in self.red_shots:
-            shot = shot_dict[shot_key]
+        for shot in self.shots:
             player = shot.player.get() # Should be cached
             if not player:
                 raise Exception("Bad player key: " + shot.player.urlsafe())
 
-            if shot.position == Position.offense:
+            if shot.side == Side.red and shot.position == Position.offense:
                 player.red_o_shots += 1
-            elif shot.position == Position.defense:
+            elif shot.side == Side.red and shot.position == Position.defense:
                 player.red_d_shots += 1
-            else:
-                raise Exception("Error: invalid position")
-            
-            originalSide, originalPosition = self.original_side_and_position(shot.player)
-            if originalPosition == Position.offense:
-                player.red_o_start_shots += 1
-            elif originalPosition == Position.defense:
-                player.red_d_start_shots += 1
-            else:
-                raise Exception("Error: invalid original position")
-                
-        # Blue:
-        for shot_key in self.blue_shots:
-            shot = shot_dict[shot_key]
-            player = shot.player.get() # Should be cached
-            if not player:
-                raise Exception("Bad player key: " + shot.player.urlsafe())
-
-            if shot.position == Position.offense:
+            elif shot.side == Side.blue and shot.position == Position.offense:
                 player.blue_o_shots += 1
-            elif shot.position == Position.defense:
+            elif shot.side == Side.blue and shot.position == Position.defense:
                 player.blue_d_shots += 1
             else:
-                raise Exception("Error: invalid position")
+                raise Exception("Error: invalid side/position")
             
-            originalSide, originalPosition = self.original_side_and_position(shot.player)
-            if originalPosition == Position.offense:
+            startingSide, startingPosition = self.starting_side_and_position(shot.player)
+            if startingSide == Side.red and startingPosition == Position.offense:
+                player.red_o_start_shots += 1
+            elif startingSide == Side.red and startingPosition == Position.defense:
+                player.red_d_start_shots += 1
+            elif startingSide == Side.blue and startingPosition == Position.offense:
                 player.blue_o_start_shots += 1
-            elif originalPosition == Position.defense:
+            elif startingSide == Side.blue and startingPosition == Position.defense:
                 player.blue_d_start_shots += 1
             else:
-                raise Exception("Error: invalid original position")
-
+                raise Exception("Error: invalid starting position")
+                
     def update_elo(self, winner1, winner2, winner_elo, loser1, loser2, loser_elo):
         winner_points, loser_points = elo.calculate(winner_elo, loser_elo)
 
@@ -318,7 +310,7 @@ class Game(ndb.Model):
             losers[i].mu = loser_updates[i].mu
             losers[i].sigma = loser_updates[i].sigma
 
-    def original_side_and_position(self, player_key):
+    def starting_side_and_position(self, player_key):
         if player_key == self.red_o:
             if self.red_halftime_reached:
                 return Side.red, Position.defense
@@ -359,29 +351,29 @@ class Game(ndb.Model):
         return self.status == GameStatus.complete
 
     @property
+    def red_score(self):
+        return sum(shot.side == Side.red for shot in self.shots)
+
+    @property
+    def blue_score(self):
+        return sum(shot.side == Side.blue for shot in self.shots)
+
+    @property
     def red_halftime_reached(self):
-        return len(self.red_shots) >= self.length/2
+        return self.red_score >= self.length/2
 
     @property
     def blue_halftime_reached(self):
-        return len(self.blue_shots) >= self.length/2
+        return self.blue_score >= self.length/2
 
     @property
     def winning_side(self):
         if not self.is_complete:
             return None
-        elif len(self.red_shots) == self.length:
+        elif self.red_score == self.length:
             return Side.red
-        else:
+        elif self.blue_score == self.length:
             return Side.blue
-
-    @property
-    def red_score(self):
-        return len(self.red_shots)
-
-    @property
-    def blue_score(self):
-        return len(self.blue_shots)
 
     @property
     def red_elo_points_to_gain(self):

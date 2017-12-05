@@ -12,7 +12,6 @@
     player,
     teammate,
     opponents,
-    shot_types,
     elo_gain,
     elo_loss,
     btn_class) %}
@@ -79,7 +78,6 @@
         game.blue_d.get(),
         game.blue_o.get(),
         (game.red_o.get(), game.red_d.get()),
-        defensive_shots,
         game.blue_elo_points_to_gain,
         game.red_elo_points_to_gain,
         "btn-primary btn-blue btn-blue-d")}}
@@ -89,7 +87,6 @@
         game.red_o.get(),
         game.red_d.get(),
         (game.blue_o.get(), game.blue_d.get()),
-        offensive_shots,
         game.red_elo_points_to_gain,
         game.blue_elo_points_to_gain,
         "btn-danger btn-red btn-red-o")}}
@@ -102,12 +99,12 @@
 <div class="row">
     <div class="col-xs-6">
         <h1 class="text-right text-primary blue-score" data-game-length="{{game.length}}">
-            {{game.blue_shots | length}}
+            {{game.blue_score}}
         </h1>
     </div>
     <div class="col-xs-6">
         <h1 class="text-left text-danger red-score" data-game-length="{{game.length}}">
-            {{game.red_shots | length}}
+            {{game.red_score}}
         </h1>
     </div>
 </div>
@@ -121,7 +118,6 @@
         game.blue_o.get(),
         game.blue_d.get(),
         (game.red_o.get(), game.red_d.get()),
-        offensive_shots,
         game.blue_elo_points_to_gain,
         game.red_elo_points_to_gain,
         "btn-primary btn-blue btn-blue-o")}}
@@ -131,7 +127,6 @@
         game.red_d.get(),
         game.red_o.get(),
         (game.blue_o.get(), game.blue_d.get()),
-        defensive_shots,
         game.red_elo_points_to_gain,
         game.blue_elo_points_to_gain,
         "btn-danger btn-red btn-red-d")}}

@@ -9,6 +9,10 @@ handlers:
 - url: /players.*
   script: controllers.players.app
 
+- url: /jobs.*
+  script: controllers.players.app
+  login: admin
+
 - url: /game.*
   script: controllers.game.app
 

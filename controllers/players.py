@@ -2,6 +2,7 @@ import webapp2
 import jinja2
 import json
 import skill
+from google.appengine.api import taskqueue
 from google.appengine.api import images
 from google.appengine.ext import ndb
 from models.player import *
@@ -120,8 +121,13 @@ class RevivePlayer(webapp2.RequestHandler):
             self.redirect('/players/unranked')
 
 class RecalculateStats(webapp2.RequestHandler):
-
     def get(self):
+        taskqueue.add(url='/jobs/recalc')
+
+        self.response.write("Success (I hope...)")
+
+class RecalculateStatsJob(webapp2.RequestHandler):
+    def post(self):
         # Fetch all players:
         player_query = Player.query()
         players = player_query.fetch()
@@ -155,8 +161,6 @@ class RecalculateStats(webapp2.RequestHandler):
         for key in player_dict:
             player_dict[key].put()
 
-        self.response.write("Success")
-
 class FixImages(webapp2.RequestHandler):
     def get(self):
         # Fetch all players:
@@ -189,5 +193,6 @@ app = webapp2.WSGIApplication([
     ('/players/revive', RevivePlayer),
     ('/players/image', ViewImage),
     ('/players/recalc', RecalculateStats),
-    ('/players/fiximages', FixImages)
+    ('/players/fiximages', FixImages),
+    ('/jobs/recalc', RecalculateStatsJob)
 ], debug=True)

@@ -54,7 +54,7 @@ $(document).ready(function() {
             redHalfTime();
         }
         else if(redScore === gameLength) {
-            gameOver("Game over - Red wins!");
+            gameOver("Game over - Yellow wins!");
         }
     }
 
@@ -68,7 +68,7 @@ $(document).ready(function() {
             blueHalfTime();
         }
         else if(blueScore === gameLength) {
-            gameOver("Game over - Blue wins!");
+            gameOver("Game over - Black wins!");
         }
     }
 
@@ -85,7 +85,7 @@ $(document).ready(function() {
         red_d.html(tempName);
         red_d.data("player", tempPlayer);
 
-        showWarning("Red half-time!");
+        showWarning("Yellow half-time!");
     }
 
     function blueHalfTime() {
@@ -101,7 +101,7 @@ $(document).ready(function() {
         blue_d.html(tempName);
         blue_d.data("player", tempPlayer);
 
-        showWarning("Blue half-time!");
+        showWarning("Black half-time!");
     }
 
     function gameOver(message) {
@@ -117,9 +117,9 @@ $(document).ready(function() {
     resetMessage();
 
     if (verifyBlueScore(+$(".blue-score").data("game-length")))
-        gameOver("Blue won this game!");
+        gameOver("Black won this game!");
     else if (verifyRedScore(+$(".red-score").data("game-length")))
-        gameOver("Red won this game!");
+        gameOver("Yellow won this game!");
     else
         $(".rematch-buttons").hide();
 
@@ -152,10 +152,10 @@ $(document).ready(function() {
             success : function(data, textStatus) {
                 if(data.success) {
                     if(!verifyBlueScore(data.blue_score)) {
-                        showError("Error: Blue score does not match server score of: " + data.blue_score + ". Please refresh for most up-to-date game state");
+                        showError("Error: Black score does not match server score of: " + data.blue_score + ". Please refresh for most up-to-date game state");
                     }
                     else if(!verifyRedScore(data.red_score)) {
-                        showError("Error: Red score does not match server score of: " + data.red_score + ". Please refresh for most up-to-date game state");
+                        showError("Error: Yellow score does not match server score of: " + data.red_score + ". Please refresh for most up-to-date game state");
                     }
                     else {
                         $(".score-btn").prop("disabled", false);

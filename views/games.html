@@ -37,10 +37,10 @@
                 Black Defense
             </th>
             <th>
-                Black Score
+                Yellow Score
             </th>
             <th>
-                Yellow Score
+                Black Score
             </th>
             <th>
             </th>
@@ -66,10 +66,10 @@
                 {{players[game.blue_d]}}
             </td>
             <td class="col-xs-2" data-game-length="{{game.length}}">
-                {{game.blue_shots | length}}
+                {{game.red_shots | length}}
             </td>
             <td class="col-xs-2" data-game-length="{{game.length}}">
-                {{game.red_shots | length}}
+                {{game.blue_shots | length}}
             </td>
             <td class="col-xs-2">
                 <a href="/games/play?key={{game.key.urlsafe()}}">Resume</a>

@@ -7,14 +7,3 @@
 .player-image img {
     width:100%
 }
-
-.btn-primary {
-    background: #000000;
-    border-color: #000000;
-}
-
-.btn-danger {
-    background: #ffe900;
-    border-color: #ffe900;
-    color: #000000;
-}

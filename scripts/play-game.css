@@ -1,3 +1,7 @@
+body {
+  background: #a0a0a0;
+}
+
 .player-image {
     width:75%;
     margin-left: auto;
@@ -8,13 +12,28 @@
     width:100%
 }
 
-.btn-primary {
+.btn-black, .btn-black:hover, .btn-black:focus {
     background: #000000;
     border-color: #000000;
+    color: #FFFFFF;
 }
 
-.btn-danger {
+.btn-yellow, .btn-yellow:hover, .btn-yellow:focus {
     background: #ffe900;
     border-color: #ffe900;
     color: #000000;
+}
+
+.text-yellow {
+  color: #ffe900;
+  font-weight:bold;
+}
+
+.text-black {
+  color: #000000;
+  font-weight:bold;
+}
+
+.text-center {
+  font-weight:bold;
 }

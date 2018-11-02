@@ -82,7 +82,7 @@
         defensive_shots,
         game.blue_elo_points_to_gain(),
         game.red_elo_points_to_gain(),
-        "btn-primary btn-blue btn-blue-d")}}
+        "btn-black btn-blue btn-blue-d")}}
 
     {{score_button(
         game,
@@ -92,7 +92,7 @@
         offensive_shots,
         game.red_elo_points_to_gain(),
         game.blue_elo_points_to_gain(),
-        "btn-danger btn-red btn-red-o")}}
+        "btn-yellow btn-red btn-red-o")}}
 
 </div>
 
@@ -101,12 +101,12 @@
 {# Scores: #}
 <div class="row">
     <div class="col-xs-6">
-        <h1 class="text-right text-primary blue-score" data-game-length="{{game.length}}">
+        <h1 class="text-right text-black blue-score" data-game-length="{{game.length}}">
             {{game.blue_shots | length}}
         </h1>
     </div>
     <div class="col-xs-6">
-        <h1 class="text-left text-danger red-score" data-game-length="{{game.length}}">
+        <h1 class="text-left text-yellow red-score" data-game-length="{{game.length}}">
             {{game.red_shots | length}}
         </h1>
     </div>
@@ -124,7 +124,7 @@
         offensive_shots,
         game.blue_elo_points_to_gain(),
         game.red_elo_points_to_gain(),
-        "btn-primary btn-blue btn-blue-o")}}
+        "btn-black btn-blue btn-blue-o")}}
 
     {{score_button(
         game,
@@ -134,7 +134,7 @@
         defensive_shots,
         game.red_elo_points_to_gain(),
         game.blue_elo_points_to_gain(),
-        "btn-danger btn-red btn-red-d")}}
+        "btn-yellow btn-red btn-red-d")}}
 
 </div>
 

@@ -12,13 +12,13 @@ body {
     width:100%
 }
 
-.btn-black, .btn-black:hover, .btn-black:focus {
+.btn-black, .btn-black:hover {
     background: #000000;
     border-color: #000000;
     color: #FFFFFF;
 }
 
-.btn-yellow, .btn-yellow:hover, .btn-yellow:focus {
+.btn-yellow, .btn-yellow:hover {
     background: #ffe900;
     border-color: #ffe900;
     color: #000000;

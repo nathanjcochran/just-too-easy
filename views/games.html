@@ -25,22 +25,22 @@
                 Time Stamp
             </th>
             <th>
-                Yellow Offense
-            </th>
-            <th>
-                Yellow Defense
-            </th>
-            <th>
                 Black Offense
             </th>
             <th>
                 Black Defense
             </th>
             <th>
-                Yellow Score
+                Yellow Offense
+            </th>
+            <th>
+                Yellow Defense
             </th>
             <th>
                 Black Score
+            </th>
+            <th>
+                Yellow Score
             </th>
             <th>
             </th>
@@ -50,28 +50,28 @@
         {% for game in games %}
 
         <tr>
-            <td class="col-xs-2">
+            <td class="col-xs-1">
                 {{game.timestamp}}
             </td>
-            <td class="col-xs-2">
-                {{players[game.red_o]}}
-            </td>
-            <td class="col-xs-2">
-                {{players[game.red_d]}}
-            </td>
-            <td class="col-xs-2">
+            <td class="col-xs-1">
                 {{players[game.blue_o]}}
             </td>
-            <td class="col-xs-2">
+            <td class="col-xs-1">
                 {{players[game.blue_d]}}
             </td>
-            <td class="col-xs-2" data-game-length="{{game.length}}">
-                {{game.red_shots | length}}
+            <td class="col-xs-1">
+                {{players[game.red_o]}}
             </td>
-            <td class="col-xs-2" data-game-length="{{game.length}}">
+            <td class="col-xs-1">
+                {{players[game.red_d]}}
+            </td>
+            <td class="col-xs-1" data-game-length="{{game.length}}">
                 {{game.blue_shots | length}}
             </td>
-            <td class="col-xs-2">
+            <td class="col-xs-1" data-game-length="{{game.length}}">
+                {{game.red_shots | length}}
+            </td>
+            <td class="col-xs-1">
                 <a href="/games/play?key={{game.key.urlsafe()}}">Resume</a>
             </td>
         </tr>

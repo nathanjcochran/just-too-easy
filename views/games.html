@@ -25,16 +25,22 @@
                 Time Stamp
             </th>
             <th>
-                Red Offense
+                Yellow Offense
             </th>
             <th>
-                Red Defense
+                Yellow Defense
             </th>
             <th>
-                Blue Offense
+                Black Offense
             </th>
             <th>
-                Blue Defense
+                Black Defense
+            </th>
+            <th>
+                Yellow Score
+            </th>
+            <th>
+                Black Score
             </th>
             <th>
             </th>
@@ -58,6 +64,12 @@
             </td>
             <td class="col-xs-2">
                 {{players[game.blue_d]}}
+            </td>
+            <td class="col-xs-2" data-game-length="{{game.length}}">
+                {{game.red_shots | length}}
+            </td>
+            <td class="col-xs-2" data-game-length="{{game.length}}">
+                {{game.blue_shots | length}}
             </td>
             <td class="col-xs-2">
                 <a href="/games/play?key={{game.key.urlsafe()}}">Resume</a>

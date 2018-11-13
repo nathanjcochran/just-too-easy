@@ -80,7 +80,7 @@
         (game.red_o.get(), game.red_d.get()),
         game.blue_elo_points_to_gain,
         game.red_elo_points_to_gain,
-        "btn-primary btn-blue btn-blue-d")}}
+        "btn-black btn-blue btn-blue-d")}}
 
     {{score_button(
         game,
@@ -89,7 +89,7 @@
         (game.blue_o.get(), game.blue_d.get()),
         game.red_elo_points_to_gain,
         game.blue_elo_points_to_gain,
-        "btn-danger btn-red btn-red-o")}}
+        "btn-yellow btn-red btn-red-o")}}
 
 </div>
 
@@ -98,12 +98,12 @@
 {# Scores: #}
 <div class="row">
     <div class="col-xs-6">
-        <h1 class="text-right text-primary blue-score" data-game-length="{{game.length}}">
+        <h1 class="text-right text-black blue-score" data-game-length="{{game.length}}">
             {{game.blue_score}}
         </h1>
     </div>
     <div class="col-xs-6">
-        <h1 class="text-left text-danger red-score" data-game-length="{{game.length}}">
+        <h1 class="text-left text-yellow red-score" data-game-length="{{game.length}}">
             {{game.red_score}}
         </h1>
     </div>
@@ -120,7 +120,7 @@
         (game.red_o.get(), game.red_d.get()),
         game.blue_elo_points_to_gain,
         game.red_elo_points_to_gain,
-        "btn-primary btn-blue btn-blue-o")}}
+        "btn-black btn-blue btn-blue-o")}}
 
     {{score_button(
         game,
@@ -129,7 +129,7 @@
         (game.blue_o.get(), game.blue_d.get()),
         game.red_elo_points_to_gain,
         game.blue_elo_points_to_gain,
-        "btn-danger btn-red btn-red-d")}}
+        "btn-yellow btn-red btn-red-d")}}
 
 </div>
 

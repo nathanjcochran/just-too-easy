@@ -1,3 +1,7 @@
+body {
+  background: #a0a0a0;
+}
+
 .player-image {
     width:75%;
     margin-left: auto;
@@ -6,4 +10,30 @@
 
 .player-image img {
     width:100%
+}
+
+.btn-black, .btn-black:hover {
+    background: #000000;
+    border-color: #000000;
+    color: #FFFFFF;
+}
+
+.btn-yellow, .btn-yellow:hover {
+    background: #ffe900;
+    border-color: #ffe900;
+    color: #000000;
+}
+
+.text-yellow {
+  color: #ffe900;
+  font-weight:bold;
+}
+
+.text-black {
+  color: #000000;
+  font-weight:bold;
+}
+
+.text-center {
+  font-weight:bold;
 }

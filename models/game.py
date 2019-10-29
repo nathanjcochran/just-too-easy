@@ -76,7 +76,7 @@ class Game(ndb.Model):
 
         self.quality = skill.calculate_quality((red_o, red_d), (blue_o, blue_d))
     
-    def initialize_double_or_nothing(self, length, players):
+    def initialize_high_stakes(self, length, players):
         self.stakes = 2
         self.initialize_random(length, players)
 

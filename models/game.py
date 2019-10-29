@@ -17,6 +17,7 @@ class Game(ndb.Model):
     status = msgprop.EnumProperty(GameStatus, required=True)
     timestamp = ndb.DateTimeProperty(auto_now_add=True, required=True)
     end_timestamp = ndb.DateTimeProperty()
+    stakes = ndb.DateTimeProperty(default=1)
 
     # Players: (current positions)
     red_o = ndb.KeyProperty(kind='Player', required=True)
@@ -35,7 +36,7 @@ class Game(ndb.Model):
 
     # TrueSkill
     quality = ndb.IntegerProperty(required=True)
-
+    
     def initialize(self, length, red_o, red_d, blue_o, blue_d):
         self.length = length
         self.status = GameStatus.active
@@ -74,6 +75,10 @@ class Game(ndb.Model):
         self.blue_elo = (blue_o.elo + blue_d.elo) / 2
 
         self.quality = skill.calculate_quality((red_o, red_d), (blue_o, blue_d))
+    
+    def initialize_double_or_nothing(self, length, players):
+        self.stakes = 2
+        self.initialize_random(length, players)
 
     def initialize_matched(self, length, players):
         self.length = length
@@ -293,21 +298,21 @@ class Game(ndb.Model):
     def update_elo(self, winner1, winner2, winner_elo, loser1, loser2, loser_elo):
         winner_points, loser_points = elo.calculate(winner_elo, loser_elo)
 
-        winner1.elo = winner1.elo + winner_points
-        winner2.elo = winner2.elo + winner_points
+        winner1.elo = winner1.elo + winner_points * self.stakes
+        winner2.elo = winner2.elo + winner_points * self.stakes
 
-        loser1.elo = loser1.elo + loser_points
-        loser2.elo = loser2.elo + loser_points
+        loser1.elo = loser1.elo + loser_points * self.stakes
+        loser2.elo = loser2.elo + loser_points * self.stakes
 
     def update_trueskill(self, winners, losers):
         winner_updates, loser_updates = skill.update_ratings(winners, losers)
 
         for i in range(len(winners)):
-            winners[i].mu = winner_updates[i].mu
+            winners[i].mu = winners[i].mu + self.stakes * (winner_updates[i].mu - winners[i].mu)
             winners[i].sigma = winner_updates[i].sigma
 
         for i in range(len(losers)):
-            losers[i].mu = loser_updates[i].mu
+            losers[i].mu = losers[i].mu - self.stakes * (losers[i].mu - loser_updates[i].mu)
             losers[i].sigma = loser_updates[i].sigma
 
     def starting_side_and_position(self, player_key):

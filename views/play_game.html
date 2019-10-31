@@ -140,6 +140,7 @@
     <div class="col-xs-12 text-center">
         <form method="POST" action="/games/rematch">
             <input type="hidden" name="game" value="{{game.key.urlsafe()}}"/>
+            <input type="submit" name="rematch_mode" value="Rematch" class="btn btn-default btn-lg"/>            
             <input type="submit" name="rematch_mode" value="Automatic Rematch" class="btn btn-default btn-lg"/>
             <input type="submit" name="rematch_mode" value="Random Rematch" class="btn btn-default btn-lg"/>
             <input type="submit" name="rematch_mode" value="Matched Rematch" class="btn btn-default btn-lg"/>

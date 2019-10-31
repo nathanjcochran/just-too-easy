@@ -140,7 +140,7 @@ class Rematch(webapp2.RequestHandler):
         elif rematch_mode == "Matched Rematch":
             new_game.initialize_matched(game.length, [game.red_o, game.red_d, game.blue_o, game.blue_d])
         elif rematch_mode == "Up the Ante Rematch":
-            new_game.initialize_high_stakes(game.length, [game.red_o, game.red_d, game.blue_o, game.blue_d])        
+            new_game.initialize_high_stakes(game.length, game.red_o, game.red_d, game.blue_o, game.blue_d)
         else:
             raise "Invalid rematch mode: " + rematch_mode
 

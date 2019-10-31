@@ -76,9 +76,9 @@ class Game(ndb.Model):
 
         self.quality = skill.calculate_quality((red_o, red_d), (blue_o, blue_d))
     
-    def initialize_high_stakes(self, length, players):
+    def initialize_high_stakes(self, length,  red_o, red_d, blue_o, blue_d):
         self.stakes = 2
-        self.initialize_random(length, players)
+        self.initialize(length,  red_o, red_d, blue_o, blue_d)
 
     def initialize_matched(self, length, players):
         self.length = length

@@ -139,6 +139,17 @@ class Rematch(webapp2.RequestHandler):
             new_game.initialize_random(game.length, [game.red_o, game.red_d, game.blue_o, game.blue_d])
         elif rematch_mode == "Matched Rematch":
             new_game.initialize_matched(game.length, [game.red_o, game.red_d, game.blue_o, game.blue_d])
+        elif rematch_mode == "Rematch":
+            loser_ht = min(game.red_shots, game.blue_shots) >= game.length / 2
+            red_win = game.red_shots > game.blue_shots
+            if loser_ht:
+                # both got to half time, both switch back to original positions
+                new_game.initialize(game.length, game.red_d, game.red_o, game.blue_d, game.blue_o)
+            else:
+                if red_win:
+                    new_game.initialize(game.length, game.red_d, game.red_o, game.blue_o, game.blue_d)
+                else
+                    new_game.initialize(game.length, game.red_o, game.red_d, game.blue_d, game.blue_o)                                    
         else:
             raise "Invalid rematch mode: " + rematch_mode
 
